@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Octavia</string>
+    <string name="web_client_id">617345663717-jffsscc541g2kl5957hvvtb08b4vqseo.apps.googleusercontent.com</string>
+    <string name="sign_in_button">Sign In</string>
+</resources>

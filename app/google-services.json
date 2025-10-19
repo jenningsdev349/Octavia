@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "617345663717",
+    "project_id": "octavia-ff0fd",
+    "storage_bucket": "octavia-ff0fd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617345663717:android:8172647b0a407fb722ca0c",
+        "android_client_info": {
+          "package_name": "com.jenningsdev.octavia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617345663717-5udqhgrd94m3ngf9l2kshtsqhnlp8fjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jenningsdev.octavia",
+            "certificate_hash": "d9d056d6b94364a3571b893acd4aabc828349b0a"
+          }
+        },
+        {
+          "client_id": "617345663717-jffsscc541g2kl5957hvvtb08b4vqseo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5KGC_kADZyvbI2jZutQ9T9lik8fhvVJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617345663717-jffsscc541g2kl5957hvvtb08b4vqseo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
