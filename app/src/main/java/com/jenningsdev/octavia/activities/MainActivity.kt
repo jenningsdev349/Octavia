@@ -16,6 +16,7 @@ import com.jenningsdev.octavia.ui.screens.SignInScreen
 import com.jenningsdev.octavia.ui.screens.SignUpScreen
 import com.jenningsdev.octavia.ui.screens.SplashScreen
 import com.jenningsdev.octavia.ui.theme.OctaviaTheme
+import com.jenningsdev.octavia.ui.viewmodels.DashboardViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LoginViewModel
 import com.jenningsdev.octavia.ui.viewmodels.SplashScreenViewModel
 
@@ -67,7 +68,8 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-                    composable(NavRoutes.dashboard.route){
+                    composable(NavRoutes.dashboard.route) {
+                        val viewModel = viewModel<DashboardViewModel>()
                         DashboardScreen()
                     }
                 }
