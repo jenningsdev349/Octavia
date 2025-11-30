@@ -11,4 +11,11 @@
     <string name="password_label">Password</string>
     <string name="logo_content_description">App Logo</string>
     <string name="placeholder_text">Octavia is the app for learning music through interactive lessons, real-time feedback, and intelligent pitch detection that adapts to you.</string>
+    <string name="dashboard_app_bar">Dashboard</string>
+    <string name="home_content_description">Home</string>
+    <string name="lessons_content_description">Lessons</string>
+    <string name="profile_content_description">Profile</string>
+    <string name="home_icon_label">Home</string>
+    <string name="lessons_icon_label">Lessons</string>
+    <string name="profile_icon_label">Profile</string>
 </resources>

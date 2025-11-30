@@ -1,16 +1,15 @@
 package com.jenningsdev.octavia.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.jenningsdev.octavia.data.repositories.WebSocketClient
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class DashboardViewModel: ViewModel() {
-    val webSocketClient: WebSocketClient = WebSocketClient()
+class DashboardViewModel : ViewModel() {
+    private val _navigationEvent = MutableStateFlow<String?>(null)
+    val navigationEvent: StateFlow<String?> = _navigationEvent
 
-    init {
-        viewModelScope.launch {
-            webSocketClient.connectToStream()
-        }
+    fun onBottomNavSelected(route: String) {
+        _navigationEvent.value = route
     }
+
 }

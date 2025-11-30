@@ -70,7 +70,13 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NavRoutes.dashboard.route) {
                         val viewModel = viewModel<DashboardViewModel>()
-                        DashboardScreen()
+                        val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
+                        DashboardScreen(
+                            navigationEvent = navigationEvent,
+                            onBottomNavSelected = { route ->
+                                viewModel.onBottomNavSelected(route)
+                            }
+                        )
                     }
                 }
             }
