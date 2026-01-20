@@ -10,7 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.jenningsdev.octavia.ui.screens.HomeScreen
 import com.jenningsdev.octavia.ui.screens.LessonListScreen
+import com.jenningsdev.octavia.ui.screens.LessonScreen
+import com.jenningsdev.octavia.ui.screens.ProfileScreen
 import com.jenningsdev.octavia.ui.viewmodels.LessonListViewModel
+import com.jenningsdev.octavia.ui.viewmodels.LessonViewModel
 
 @Composable
 fun DashboardNavGraph(
@@ -36,7 +39,17 @@ fun DashboardNavGraph(
             )
         }
         composable(NavRoutes.profile.route) {
-            HomeScreen()
+            ProfileScreen()
+        }
+        composable(NavRoutes.lesson.route){
+            val viewModel = viewModel<LessonViewModel>()
+            val note by viewModel.note.collectAsStateWithLifecycle()
+            val pitchHz by viewModel.pitchHz.collectAsStateWithLifecycle()
+            LessonScreen(
+                note = note,
+                pitchHz = pitchHz,
+                startAudio = { viewModel.startAudio() }
+            )
         }
     }
 }

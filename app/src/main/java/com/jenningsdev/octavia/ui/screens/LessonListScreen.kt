@@ -17,6 +17,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,14 +31,24 @@ fun LessonListScreen(
     navigationEvent: String?,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            "lesson" -> {
+                navController.navigate("lesson")
+            }
+        }
+    }
+
     LessonListContent(
-        lessons = lessons
+        lessons = lessons,
+        navController = navController
     )
 }
 
 @Composable
 fun LessonListContent(
     lessons: List<Lesson>,
+    navController: NavController
 ) {
     LazyColumn(
         modifier = Modifier
@@ -47,7 +58,8 @@ fun LessonListContent(
     ) {
         items(lessons) { lesson ->
             LessonItem(
-                lesson = lesson
+                lesson = lesson,
+                navController = navController
             )
         }
     }
@@ -55,7 +67,8 @@ fun LessonListContent(
 
 @Composable
 fun LessonItem(
-    lesson: Lesson
+    lesson: Lesson,
+    navController: NavController
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -64,7 +77,7 @@ fun LessonItem(
                 Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = LocalIndication.current,
-                    onClick = { }
+                    onClick = { navController.navigate("lesson")}
                 )
             ),
         shape = RoundedCornerShape(12.dp)
