@@ -1,4 +1,4 @@
-package com.jenningsdev.octavia.audio
+package com.jenningsdev.octavia.data.audio
 
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.AudioEvent

@@ -42,12 +42,13 @@ fun SignUpScreen(
     state: SignInState,
     navController: NavController,
     navigationEvent: String?,
-    onSignUpClick: (String, String) -> Unit,
+    onSignUpClick: (String, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context: Context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = state.signInError) {
         state.signInError?.let { error -> Toast.makeText(
@@ -113,6 +114,14 @@ fun SignUpScreen(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.name_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
         Box(
@@ -121,7 +130,7 @@ fun SignUpScreen(
                 .padding(16.dp)
         ) {
             Button(
-                onClick = { onSignUpClick(email, password) },
+                onClick = { onSignUpClick(email, password, name) },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour2)),
                 modifier = Modifier.fillMaxWidth()
             ) {

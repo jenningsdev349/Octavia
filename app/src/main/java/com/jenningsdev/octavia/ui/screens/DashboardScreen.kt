@@ -1,5 +1,7 @@
 package com.jenningsdev.octavia.ui.screens
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +23,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jenningsdev.octavia.R
-import com.jenningsdev.octavia.ui.navigation.DashboardNavGraph
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,10 +63,12 @@ fun DashboardScreen(
             )
         }
     ) { innerPadding ->
-        DashboardNavGraph(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+        }
     }
 }
 

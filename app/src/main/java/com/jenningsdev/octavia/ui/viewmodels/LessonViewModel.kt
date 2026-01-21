@@ -2,7 +2,7 @@ package com.jenningsdev.octavia.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jenningsdev.octavia.audio.AudioEngine
+import com.jenningsdev.octavia.data.audio.AudioEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

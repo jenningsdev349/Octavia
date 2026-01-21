@@ -1,15 +1,26 @@
 package com.jenningsdev.octavia.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.jenningsdev.octavia.data.model.auth.SignInState
+import com.jenningsdev.octavia.data.model.models.User
 import com.jenningsdev.octavia.data.repositories.AuthRepository
+import com.jenningsdev.octavia.data.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel : ViewModel() {
-    val repository: AuthRepository = AuthRepository()
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
+    val authRepository: AuthRepository = AuthRepository()
+    val userRepository: UserRepository =
+        UserRepository(context = application.applicationContext)
+
+    private var database: DatabaseReference = Firebase.database.reference
 
     private val _uiState = MutableStateFlow(SignInState())
     val uiState = _uiState.asStateFlow()
@@ -27,8 +38,9 @@ class LoginViewModel : ViewModel() {
             }
         }
 
-        repository.signIn(email, password) { success, error ->
+        authRepository.signIn(email, password) { success, error ->
             if (success) {
+                userRepository.setLoggedIn(true)
                 _uiState.update { it.copy(isSignInSuccessful = true) }
                 _navigationEvent.value = "dashboard"
             } else {
@@ -43,8 +55,8 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun onSignUpClick(email: String, password: String) {
-        if (email.isBlank() || password.isBlank()) {
+    fun onSignUpClick(email: String, password: String, name: String) {
+        if (email.isBlank() || password.isBlank() || name.isBlank()) {
             _uiState.update {
                 it.copy(
                     isSignInSuccessful = false,
@@ -54,9 +66,15 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        repository.signUp(email, password) { success, error ->
+        authRepository.signUp(email, password) { success, error ->
             if (success) {
+                val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                val user = firebaseAuth.currentUser
+                val uid = user?.uid
+
+                userRepository.setLoggedIn(true)
                 _uiState.update { it.copy(isSignInSuccessful = true, signInError = null) }
+                createNewUser(uid, email, name)
                 _navigationEvent.value = "dashboard"
             } else {
                 _uiState.update {
@@ -66,6 +84,13 @@ class LoginViewModel : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    private fun createNewUser(uid: String?, email: String, name: String) {
+        val user = User(email, name)
+        if (uid != null) {
+            database.child("users").child(uid).setValue(user)
         }
     }
 }

@@ -18,4 +18,8 @@ class AuthRepository(
                 onResult(task.isSuccessful, task.exception?.message)
             }
     }
+
+    fun signOut() {
+        auth.signOut()
+    }
 }

@@ -1,4 +1,4 @@
-package com.jenningsdev.octavia.audio
+package com.jenningsdev.octavia.data.audio
 
 import kotlin.math.log2
 import kotlin.math.roundToInt
