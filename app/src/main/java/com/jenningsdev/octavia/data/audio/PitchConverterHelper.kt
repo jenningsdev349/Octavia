@@ -15,7 +15,6 @@ object PitchConverterHelper {
 
     private fun midiToNote(midi: Int): String {
         val names = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-        val octave = midi / 12 - 1
-        return "${names[midi % 12]}$octave"
+        return names[midi % 12]
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -166,14 +167,17 @@ class MainActivity : ComponentActivity() {
                                     username = uiState.username
                                 )
                             }
-                            composable(NavRoutes.lesson.route) {
+                            composable(NavRoutes.lesson.route){
                                 val viewModel = viewModel<LessonViewModel>()
                                 val note by viewModel.note.collectAsStateWithLifecycle()
-                                val pitchHz by viewModel.pitchHz.collectAsStateWithLifecycle()
+                                val gesture = viewModel.gesture.collectAsStateWithLifecycle()
                                 LessonScreen(
+                                    lessonId = 1,
+                                    gesture = gesture,
                                     note = note,
-                                    pitchHz = pitchHz,
-                                    startAudio = { viewModel.startAudio() }
+                                    startAudio = { viewModel.startAudio() },
+                                    isNoteCorrect = viewModel.isNoteCorrect(),
+                                    modifier = Modifier.fillMaxSize(),
                                 )
                             }
                         }
