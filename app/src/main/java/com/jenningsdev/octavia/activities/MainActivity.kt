@@ -169,14 +169,19 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(NavRoutes.lesson.route){
                                 val viewModel = viewModel<LessonViewModel>()
+                                val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 val note by viewModel.note.collectAsStateWithLifecycle()
                                 val gesture = viewModel.gesture.collectAsStateWithLifecycle()
+
                                 LessonScreen(
                                     lessonId = 1,
+                                    navigationEvent = navigationEvent,
+                                    navController = navController,
                                     gesture = gesture,
                                     note = note,
                                     startAudio = { viewModel.startAudio() },
                                     isNoteCorrect = viewModel.isNoteCorrect(),
+                                    onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),
                                 )
                             }
