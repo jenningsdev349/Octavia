@@ -50,16 +50,16 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         AboutCard(
-            title = "Kodály Method",
-            description = "Discover what makes the Kodály method so special.",
+            title = "Continue Lesson",
+            description = "Continue lesson plan from where you left off.",
             image = painterResource(id = R.drawable.about_card),
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         AboutCard(
-            title = "Takadimi Method",
-            description = "Discover what makes the Takadimi method so special.",
+            title = "Analytics",
+            description = "View user analytics, grades, achievements.",
             image = painterResource(id = R.drawable.takadimi),
         )
     }

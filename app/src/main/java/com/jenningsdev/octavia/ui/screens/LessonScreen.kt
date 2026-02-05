@@ -42,28 +42,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.model.models.Gesture
+import com.jenningsdev.octavia.ui.navigation.NavRoutes
 
 @Composable
 fun LessonScreen(
     lessonId: Int,
+    navigationEvent: String?,
+    navController: NavController,
     gesture: State<Gesture>,
     note: String?,
     startAudio: () -> Unit,
     isNoteCorrect: Boolean,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (lessonId) {
         1 -> CameraAndNoteLessonScreen(
-            note = note, startAudio = startAudio, isNoteCorrect = isNoteCorrect, gesture = gesture
+            note = note,
+            startAudio = startAudio,
+            isNoteCorrect = isNoteCorrect,
+            onNextClick = onNextClick,
+            gesture = gesture,
+            modifier = modifier
         )
+    }
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            "lessonList" -> {
+                navController.navigate(NavRoutes.lessonList.route)
+            }
+        }
     }
 }
 
 @Composable
 fun CameraPreview(
-    controller: LifecycleCameraController, modifier: Modifier = Modifier
+    controller: LifecycleCameraController,
+    modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     Column() {
@@ -80,7 +99,10 @@ fun CameraPreview(
 
 @Composable
 fun PhotoReviewScreen(
-    bitmap: Bitmap, modifier: Modifier = Modifier
+    bitmap: Bitmap,
+    isNoteCorrect: Boolean,
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -88,9 +110,21 @@ fun PhotoReviewScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp), contentAlignment = Alignment.Center
+                .height(56.dp),
+            contentAlignment = Alignment.Center
         ) {
             Text(text = stringResource(R.string.photo_taken_label), fontSize = 24.sp)
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
+                stringResource(R.string.incorrect_note_label)
+            )
         }
 
         Box(
@@ -104,7 +138,7 @@ fun PhotoReviewScreen(
             )
 
             Button(
-                onClick = {},
+                onClick = { onNextClick() },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -122,6 +156,7 @@ fun CameraAndNoteLessonScreen(
     gesture: State<Gesture>,
     startAudio: () -> Unit,
     isNoteCorrect: Boolean,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -225,16 +260,20 @@ fun CameraAndNoteLessonScreen(
         }
     } else {
         PhotoReviewScreen(
-            bitmap = capturedBitmap!!, modifier = modifier.fillMaxSize()
+            bitmap = capturedBitmap!!,
+            isNoteCorrect = isNoteCorrect,
+            onNextClick = onNextClick,
+            modifier = modifier.fillMaxSize()
         )
     }
 }
 
 private fun takePhoto(
-    controller: LifecycleCameraController, onPhotoTaken: (Bitmap) -> Unit, context: Context
+    controller: LifecycleCameraController,
+    onPhotoTaken: (Bitmap) -> Unit,
+    context: Context
 ) {
-    controller.takePicture(
-        ContextCompat.getMainExecutor(context),
+    controller.takePicture(ContextCompat.getMainExecutor(context),
         object : OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 super.onCaptureSuccess(image)

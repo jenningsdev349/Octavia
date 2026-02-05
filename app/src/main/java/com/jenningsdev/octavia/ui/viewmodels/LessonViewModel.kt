@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jenningsdev.octavia.data.audio.AudioEngine
 import com.jenningsdev.octavia.data.model.models.Gesture
+import com.jenningsdev.octavia.ui.navigation.NavRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LessonViewModel : ViewModel() {
+    private val _navigationEvent = MutableStateFlow<String?>(null)
+    val navigationEvent: StateFlow<String?> = _navigationEvent
 
     private val audioEngine = AudioEngine()
 
@@ -37,5 +40,9 @@ class LessonViewModel : ViewModel() {
     override fun onCleared() {
         audioEngine.stopAudio()
         super.onCleared()
+    }
+
+    fun onNextClick() {
+        _navigationEvent.value = NavRoutes.lessonList.route
     }
 }
