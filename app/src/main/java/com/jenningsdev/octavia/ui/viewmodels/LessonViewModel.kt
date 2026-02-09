@@ -43,6 +43,6 @@ class LessonViewModel : ViewModel() {
     }
 
     fun onNextClick() {
-        _navigationEvent.value = NavRoutes.lessonList.route
+        _navigationEvent.value = NavRoutes.gestureReview.route
     }
 }

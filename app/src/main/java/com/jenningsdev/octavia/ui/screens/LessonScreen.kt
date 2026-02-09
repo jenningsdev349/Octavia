@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -72,8 +73,8 @@ fun LessonScreen(
 
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
-            "lessonList" -> {
-                navController.navigate(NavRoutes.lessonList.route)
+            "gestureReview" -> {
+                navController.navigate(NavRoutes.gestureReview.route)
             }
         }
     }
@@ -92,7 +93,8 @@ fun CameraPreview(
                     this.controller = controller
                     controller.bindToLifecycle(lifecycleOwner)
                 }
-            }, modifier = modifier
+            },
+            modifier = modifier
         )
     }
 }
@@ -113,17 +115,9 @@ fun PhotoReviewScreen(
                 .height(56.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = stringResource(R.string.photo_taken_label), fontSize = 24.sp)
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            contentAlignment = Alignment.Center
-        ) {
             if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
-                stringResource(R.string.incorrect_note_label)
+                stringResource(R.string.incorrect_note_label),
+                fontSize = 24.sp
             )
         }
 
@@ -244,9 +238,11 @@ fun CameraAndNoteLessonScreen(
                 Button(
                     onClick = {
                         takePhoto(
-                            controller = controller, onPhotoTaken = { bitmap ->
+                            controller = controller,
+                            onPhotoTaken = { bitmap ->
                                 capturedBitmap = bitmap
-                            }, context = context
+                            },
+                            context = context
                         )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),

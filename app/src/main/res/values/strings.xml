@@ -32,4 +32,6 @@
     <string name="perform_gesture_and_note_label">Perform Gesture and Note: %1$s</string>
     <string name="correct_note_label">Correct Note!</string>
     <string name="incorrect_note_label">Incorrect Note, try again!</string>
+    <string name="rate_label">Rate!</string>
+    <string name="rate_gesture_label">"Rate Gesture: "</string>
 </resources>
