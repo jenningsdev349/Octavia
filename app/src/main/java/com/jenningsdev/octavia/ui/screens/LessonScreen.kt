@@ -55,6 +55,7 @@ fun LessonScreen(
     gesture: State<Gesture>,
     note: String?,
     startAudio: () -> Unit,
+    stopAudio: () -> Unit,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -63,6 +64,7 @@ fun LessonScreen(
         1 -> CameraAndNoteLessonScreen(
             note = note,
             startAudio = startAudio,
+            stopAudio = stopAudio,
             isNoteCorrect = isNoteCorrect,
             onNextClick = onNextClick,
             gesture = gesture,
@@ -155,6 +157,7 @@ fun CameraAndNoteLessonScreen(
     note: String?,
     gesture: State<Gesture>,
     startAudio: () -> Unit,
+    stopAudio: () -> Unit,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -259,6 +262,8 @@ fun CameraAndNoteLessonScreen(
             }
         }
     } else {
+        stopAudio()
+        
         PhotoReviewScreen(
             bitmap = capturedBitmap!!,
             isNoteCorrect = isNoteCorrect,

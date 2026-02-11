@@ -180,6 +180,7 @@ class MainActivity : ComponentActivity() {
                                     gesture = gesture,
                                     note = note,
                                     startAudio = { viewModel.startAudio() },
+                                    stopAudio = { viewModel.stopAudio() },
                                     isNoteCorrect = viewModel.isNoteCorrect(),
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),

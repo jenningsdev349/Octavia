@@ -33,6 +33,12 @@ class LessonViewModel : ViewModel() {
         }
     }
 
+    fun stopAudio() {
+        viewModelScope.launch {
+            audioEngine.stopAudio()
+        }
+    }
+
     fun isNoteCorrect(): Boolean {
         return _note.value == _gesture.value.note
     }
