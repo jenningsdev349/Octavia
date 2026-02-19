@@ -33,8 +33,12 @@ class LessonViewModel : ViewModel() {
         }
     }
 
-    fun isNoteCorrect(): Boolean {
-        return _note.value == _gesture.value.note
+    fun isMajorNoteCorrect(): Boolean {
+        return _note.value == _gesture.value.majorNote
+    }
+
+    fun isMinorNoteCorrect(): Boolean {
+        return _note.value == _gesture.value.minorNote
     }
 
     override fun onCleared() {

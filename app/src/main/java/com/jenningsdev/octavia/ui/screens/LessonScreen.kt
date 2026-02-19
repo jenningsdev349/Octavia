@@ -55,7 +55,8 @@ fun LessonScreen(
     gesture: State<Gesture>,
     note: String?,
     startAudio: () -> Unit,
-    isNoteCorrect: Boolean,
+    isMajorNoteCorrect: Boolean,
+    isMinorNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -63,7 +64,16 @@ fun LessonScreen(
         1 -> CameraAndNoteLessonScreen(
             note = note,
             startAudio = startAudio,
-            isNoteCorrect = isNoteCorrect,
+            isNoteCorrect = isMajorNoteCorrect,
+            onNextClick = onNextClick,
+            gesture = gesture,
+            modifier = modifier
+        )
+
+        2 -> CameraAndNoteLessonScreen(
+            note = note,
+            startAudio = startAudio,
+            isNoteCorrect = isMinorNoteCorrect,
             onNextClick = onNextClick,
             gesture = gesture,
             modifier = modifier

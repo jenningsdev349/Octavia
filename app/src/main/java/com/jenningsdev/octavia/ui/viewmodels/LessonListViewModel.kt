@@ -9,36 +9,44 @@ class LessonListViewModel : ViewModel() {
     private val _lessons = MutableStateFlow(
         listOf(
             Lesson(
-                "Kodály Method Lesson 1: Major Scale",
-                "Learn about Major Scale through performing gestures and singing corresponding note"
+                lessonId = 1,
+                title = "Kodály Method Lesson 1: Major Scale",
+                description = "Learn about Major Scale through performing gestures and singing corresponding note"
             ),
             Lesson(
-                "Kodály Method Lesson 2: Minor Scale",
-                "Learn about Minor Scale through performing gestures and singing corresponding note"
+                lessonId = 2,
+                title = "Kodály Method Lesson 2: Minor Scale",
+                description = "Learn about Minor Scale through performing gestures and singing corresponding note"
             ),
             Lesson(
-                "Kodály Method Lesson 3: Note Intervals",
-                "Learn about intervals between notes and note relationships."
+                lessonId = 3,
+                title = "Kodály Method Lesson 3: Note Intervals",
+                description = "Learn about intervals between notes and note relationships."
             ),
             Lesson(
-                "Kodály Method Lesson 4: Note Intervals + Gestures",
-                "Learn about and perform gestures corresponding to intervals between notes and note relationships."
+                lessonId = 4,
+                title = "Kodály Method Lesson 4: Note Intervals + Gestures",
+                description = "Learn about and perform gestures corresponding to intervals between notes and note relationships."
             ),
             Lesson(
-                "Kodály Method Lesson 5: Ear Training",
-                "Listen along to note being played, select correct note from list."
+                lessonId = 5,
+                title = "Kodály Method Lesson 5: Ear Training",
+                description = "Listen along to note being played, select correct note from list."
             ),
             Lesson(
-                "Kodály Method Lesson 6: Ear Training + Gestures",
-                "Listen along to note being played, select correct note and perform correct gesture."
+                lessonId = 6,
+                title = "Kodály Method Lesson 6: Ear Training + Gestures",
+                description = "Listen along to note being played, select correct note and perform correct gesture."
             ),
             Lesson(
-                "Takadimi Method Lesson 1: Basic Rhythm",
-                "Clap along to a 4/4 beat"
+                lessonId = 7,
+                title = "Takadimi Method Lesson 1: Basic Rhythm",
+                description = "Clap along to a 4/4 beat"
             ),
             Lesson(
-                "Takadimi Method Lesson 2: Ta-Ka-Di-Mi",
-                "Perform correct syllable corresponding to beat."
+                lessonId = 8,
+                title = "Takadimi Method Lesson 2: Ta-Ka-Di-Mi",
+                description = "Perform correct syllable corresponding to beat."
             )
         )
     )

@@ -17,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
@@ -147,8 +149,7 @@ class MainActivity : ComponentActivity() {
                                 val lessons by viewModel.lessons.collectAsStateWithLifecycle()
                                 LessonListScreen(
                                     lessons = lessons,
-                                    navController = navController,
-                                    navigationEvent = navigationEvent,
+                                    navController = navController
                                 )
                             }
                             composable(NavRoutes.profile.route) {
@@ -167,20 +168,30 @@ class MainActivity : ComponentActivity() {
                                     username = uiState.username
                                 )
                             }
-                            composable(NavRoutes.lesson.route){
+                            composable(
+                                route = NavRoutes.lesson.routeArg!!,
+                                arguments = listOf(
+                                    navArgument("lessonId") {
+                                        type = NavType.IntType
+                                    }
+                                )
+                            ) { backStackEntry ->
+                                val lessonId = backStackEntry.arguments?.getInt("lessonId") ?: 1
+
                                 val viewModel = viewModel<LessonViewModel>()
                                 val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 val note by viewModel.note.collectAsStateWithLifecycle()
-                                val gesture = viewModel.gesture.collectAsStateWithLifecycle()
+                                val gesture = viewModel.gesture.collectAsState()
 
                                 LessonScreen(
-                                    lessonId = 1,
+                                    lessonId = lessonId,
                                     navigationEvent = navigationEvent,
                                     navController = navController,
                                     gesture = gesture,
                                     note = note,
                                     startAudio = { viewModel.startAudio() },
-                                    isNoteCorrect = viewModel.isNoteCorrect(),
+                                    isMajorNoteCorrect = viewModel.isMajorNoteCorrect(),
+                                    isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),
                                 )
