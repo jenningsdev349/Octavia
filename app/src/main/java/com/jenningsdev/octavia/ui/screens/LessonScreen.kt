@@ -15,7 +15,9 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -173,16 +177,7 @@ fun PhotoReviewScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = stringResource(R.string.photo_taken_label), fontSize = 24.sp)
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+                .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
             if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
@@ -243,6 +238,10 @@ fun CameraAndNoteLessonScreen(
         }
     }
 
+    val borderColor by animateColorAsState(
+        targetValue = if (isNoteCorrect) Color.Green else Color.Transparent
+    )
+
     LaunchedEffect(true) {
         if (ContextCompat.checkSelfPermission(
                 context, cameraPermission
@@ -264,60 +263,56 @@ fun CameraAndNoteLessonScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(36.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = stringResource(
                         R.string.perform_gesture_and_note_label, gesture.value.gestureName
-                    ), fontSize = 24.sp
+                    ), fontSize = 18.sp
                 )
             }
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(36.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Note: $note", fontSize = 24.sp)
+                Text("Note: $note", fontSize = 18.sp)
             }
-
-
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .border(
+                        width = 4.dp,
+                        color = borderColor,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(4.dp)
             ) {
-                if (isNoteCorrect) {
-                    Text(stringResource(R.string.correct_label), fontSize = 24.sp)
-                } else {
-                    Text(stringResource(R.string.incorrect_label), fontSize = 24.sp)
-                }
-            }
-
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                CameraPreview(
-                    controller = controller, modifier = modifier.fillMaxSize()
-                )
-
-                Button(
-                    onClick = {
-                        takePhoto(
-                            controller = controller, onPhotoTaken = { bitmap ->
-                                capturedBitmap = bitmap
-                            }, context = context
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(stringResource(R.string.capture_photo_button))
+                    CameraPreview(
+                        controller = controller, modifier = modifier.fillMaxSize()
+                    )
+
+                    Button(
+                        onClick = {
+                            takePhoto(
+                                controller = controller, onPhotoTaken = { bitmap ->
+                                    capturedBitmap = bitmap
+                                }, context = context
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.capture_photo_button))
+                    }
                 }
             }
         }
