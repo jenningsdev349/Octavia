@@ -25,22 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jenningsdev.octavia.data.model.models.Lesson
+import com.jenningsdev.octavia.ui.navigation.NavRoutes
 
 @Composable
 fun LessonListScreen(
     lessons: List<Lesson>,
     navController: NavController,
-    navigationEvent: String?,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(navigationEvent) {
-        when (navigationEvent) {
-            "lesson" -> {
-                navController.navigate("lesson")
-            }
-        }
-    }
-
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -56,7 +48,9 @@ fun LessonListScreen(
         Box {
             LessonListContent(
                 lessons = lessons,
-                navController = navController
+                onClick = { lessonId: Int ->
+                    navController.navigate("lesson/$lessonId")
+                }
             )
         }
     }
@@ -65,7 +59,7 @@ fun LessonListScreen(
 @Composable
 fun LessonListContent(
     lessons: List<Lesson>,
-    navController: NavController
+    onClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -76,7 +70,7 @@ fun LessonListContent(
         items(lessons) { lesson ->
             LessonItem(
                 lesson = lesson,
-                navController = navController
+                onClick = onClick
             )
         }
     }
@@ -85,7 +79,7 @@ fun LessonListContent(
 @Composable
 fun LessonItem(
     lesson: Lesson,
-    navController: NavController
+    onClick: (Int) -> Unit,
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -94,7 +88,7 @@ fun LessonItem(
                 Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = LocalIndication.current,
-                    onClick = { navController.navigate("lesson")}
+                    onClick = { onClick(lesson.lessonId) }
                 )
             ),
         shape = RoundedCornerShape(12.dp)

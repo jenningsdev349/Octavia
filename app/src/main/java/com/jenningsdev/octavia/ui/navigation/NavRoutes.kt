@@ -1,11 +1,11 @@
 package com.jenningsdev.octavia.ui.navigation
 
-sealed class NavRoutes(val route: String) {
+sealed class NavRoutes(val route: String, val routeArg: String? = null) {
     data object splashScreen : NavRoutes("splash_screen")
     data object signUp : NavRoutes("sign_up")
     data object signIn : NavRoutes("sign_in")
     data object dashboard: NavRoutes("dashboard")
     data object lessonList: NavRoutes("lessonList")
     data object profile: NavRoutes("profile")
-    data object lesson: NavRoutes("lesson")
+    data object lesson: NavRoutes("lesson", routeArg = "lesson/{lessonId}")
 }
