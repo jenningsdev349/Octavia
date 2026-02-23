@@ -193,7 +193,6 @@ class MainActivity : ComponentActivity() {
                                     isMajorNoteCorrect = viewModel.isMajorNoteCorrect(),
                                     isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),
                                     stopAudio = { viewModel.stopAudio() },
-                                    isNoteCorrect = viewModel.isNoteCorrect(),
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),
                                 )

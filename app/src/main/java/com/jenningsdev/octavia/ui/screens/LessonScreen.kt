@@ -69,13 +69,20 @@ fun LessonScreen(
     note: String?,
     startAudio: () -> Unit,
     stopAudio: () -> Unit,
-    isNoteCorrect: Boolean,
     isMajorNoteCorrect: Boolean,
     isMinorNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedScreen by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            "lessonList" -> {
+                navController.navigate(NavRoutes.lessonList.route)
+            }
+        }
+    }
 
     if (selectedScreen != null) {
         when (selectedScreen) {
@@ -137,24 +144,6 @@ fun LessonScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.lesson_instructions_button))
-            }
-        }
-    when (lessonId) {
-        1 -> CameraAndNoteLessonScreen(
-            note = note,
-            startAudio = startAudio,
-            stopAudio = stopAudio,
-            isNoteCorrect = isNoteCorrect,
-            onNextClick = onNextClick,
-            gesture = gesture,
-            modifier = modifier
-        )
-    }
-
-    LaunchedEffect(navigationEvent) {
-        when (navigationEvent) {
-            "lessonList" -> {
-                navController.navigate(NavRoutes.lessonList.route)
             }
         }
     }
