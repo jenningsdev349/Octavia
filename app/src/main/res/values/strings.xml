@@ -21,7 +21,7 @@
     <string name="sign_out_button">Sign Out</string>
     <string name="name_label">"Name: "</string>
     <string name="view_analytics_button">View Analytics</string>
-    <string name="perform_gesture_label">"Perform Gesture: %1$s"</string>
+    <string name="perform_gesture_label">"Perform the following gesture: %1$s"</string>
     <string name="capture_photo_button">Capture Photo</string>
     <string name="photo_taken_label">Photo Taken</string>
     <string name="next_button">Next</string>
@@ -32,4 +32,6 @@
     <string name="perform_gesture_and_note_label">Perform Gesture and Note: %1$s</string>
     <string name="correct_note_label">Correct Note!</string>
     <string name="incorrect_note_label">Incorrect Note, try again!</string>
+    <string name="lesson_instructions_button">Continue to Lesson</string>
+    <string name="placeholder_instructions_label">Sing the correct note and perform correct gesture. Screen will flash green when singing correct note.</string>
 </resources>
