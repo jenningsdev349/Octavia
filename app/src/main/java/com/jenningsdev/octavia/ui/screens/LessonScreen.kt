@@ -58,6 +58,7 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.model.models.Gesture
+import com.jenningsdev.octavia.data.model.models.NoteInterval
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 
 @Composable
@@ -67,10 +68,14 @@ fun LessonScreen(
     navController: NavController,
     gesture: State<Gesture>,
     note: String?,
+    noteInterval: State<NoteInterval>,
     startAudio: () -> Unit,
     stopAudio: () -> Unit,
     isMajorNoteCorrect: Boolean,
     isMinorNoteCorrect: Boolean,
+    captureFirstNote: () -> Unit,
+    captureSecondNote: () -> Unit,
+    detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -86,7 +91,7 @@ fun LessonScreen(
 
     if (selectedScreen != null) {
         when (selectedScreen) {
-            1 -> CameraAndNoteLessonScreen(
+            1 -> ScaleLessonScreen(
                 note = note,
                 startAudio = startAudio,
                 stopAudio = stopAudio,
@@ -96,13 +101,23 @@ fun LessonScreen(
                 modifier = modifier
             )
 
-            2 -> CameraAndNoteLessonScreen(
+            2 -> ScaleLessonScreen(
                 note = note,
                 startAudio = startAudio,
                 stopAudio = stopAudio,
                 isNoteCorrect = isMinorNoteCorrect,
                 onNextClick = onNextClick,
                 gesture = gesture,
+                modifier = modifier
+            )
+
+            3 -> NoteIntervalLessonScreen(
+                note = note,
+                noteInterval = noteInterval,
+                captureFirstNote = captureFirstNote,
+                captureSecondNote = captureSecondNote,
+                detectNoteInterval = detectNoteInterval,
+                startAudio = startAudio,
                 modifier = modifier
             )
         }
@@ -212,7 +227,7 @@ fun PhotoReviewScreen(
 }
 
 @Composable
-fun CameraAndNoteLessonScreen(
+fun ScaleLessonScreen(
     note: String?,
     gesture: State<Gesture>,
     startAudio: () -> Unit,
@@ -329,6 +344,63 @@ fun CameraAndNoteLessonScreen(
             onNextClick = onNextClick,
             modifier = modifier.fillMaxSize()
         )
+    }
+}
+
+@Composable
+fun NoteIntervalLessonScreen(
+    note: String?,
+    noteInterval: State<NoteInterval>,
+    captureFirstNote: () -> Unit,
+    captureSecondNote: () -> Unit,
+    detectNoteInterval: Boolean,
+    startAudio: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    startAudio()
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(36.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Note Interval: ${noteInterval.value}", fontSize = 18.sp)
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(36.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Note: $note", fontSize = 18.sp)
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
+        ) {
+            Column {
+                Button(
+                    onClick = captureFirstNote
+                ) {
+                    Text("Capture First Note")
+                }
+
+                Button(
+                    onClick = captureSecondNote
+                ) {
+                    Text("Capture Second Note")
+                }
+
+                if (detectNoteInterval) Text("Correct!") else Text("False!")
+            }
+        }
     }
 }
 
