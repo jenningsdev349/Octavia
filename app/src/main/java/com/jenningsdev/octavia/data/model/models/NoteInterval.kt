@@ -19,13 +19,11 @@ data class NoteInterval(
         val MajorSeventh = NoteInterval("Major Seventh", 11)
 
         private val allIntervals = listOf(
-            Unison,
             MinorSecond,
             MajorSecond,
             MinorThird,
             MajorThird,
             PerfectFourth,
-            Tritone,
             PerfectFifth,
             MinorSixth,
             MajorSixth,

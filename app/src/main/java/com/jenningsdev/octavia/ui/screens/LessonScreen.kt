@@ -18,6 +18,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -89,77 +90,163 @@ fun LessonScreen(
         }
     }
 
-    if (selectedScreen != null) {
-        when (selectedScreen) {
-            1 -> ScaleLessonScreen(
-                note = note,
-                startAudio = startAudio,
-                stopAudio = stopAudio,
-                isNoteCorrect = isMajorNoteCorrect,
-                onNextClick = onNextClick,
-                gesture = gesture,
-                modifier = modifier
-            )
+    when (selectedScreen) {
+        1 -> ScaleLessonScreen(
+            note = note,
+            startAudio = startAudio,
+            stopAudio = stopAudio,
+            isNoteCorrect = isMajorNoteCorrect,
+            onNextClick = onNextClick,
+            gesture = gesture,
+            modifier = modifier
+        )
 
-            2 -> ScaleLessonScreen(
-                note = note,
-                startAudio = startAudio,
-                stopAudio = stopAudio,
-                isNoteCorrect = isMinorNoteCorrect,
-                onNextClick = onNextClick,
-                gesture = gesture,
-                modifier = modifier
-            )
+        2 -> ScaleLessonScreen(
+            note = note,
+            startAudio = startAudio,
+            stopAudio = stopAudio,
+            isNoteCorrect = isMinorNoteCorrect,
+            onNextClick = onNextClick,
+            gesture = gesture,
+            modifier = modifier
+        )
 
-            3 -> NoteIntervalLessonScreen(
-                note = note,
-                noteInterval = noteInterval,
-                captureFirstNote = captureFirstNote,
-                captureSecondNote = captureSecondNote,
-                detectNoteInterval = detectNoteInterval,
-                startAudio = startAudio,
-                modifier = modifier
-            )
-        }
-    } else {
-        Column(
+        3 -> NoteIntervalLessonScreen(
+            note = note,
+            noteInterval = noteInterval,
+            captureFirstNote = captureFirstNote,
+            captureSecondNote = captureSecondNote,
+            detectNoteInterval = detectNoteInterval,
+            onNextClick = onNextClick,
+            startAudio = startAudio,
+            modifier = modifier
+        )
+
+        null -> InstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = { selectedScreen = it },
+            gesture = gesture,
+            noteInterval = noteInterval,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun InstructionsScreen(
+    lessonId: Int,
+    onSelectScreen: (Int) -> Unit,
+    gesture: State<Gesture>,
+    noteInterval: State<NoteInterval>,
+    modifier: Modifier = Modifier
+) {
+    when (lessonId) {
+        1 -> ScaleInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            gesture = gesture,
+            modifier = modifier
+        )
+
+        2 -> ScaleInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            gesture = gesture,
+            modifier = modifier
+        )
+
+        3 -> IntervalInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            noteInterval = noteInterval,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun ScaleInstructionsScreen(
+    lessonId: Int,
+    onSelectScreen: (Int) -> Unit,
+    gesture: State<Gesture>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            stringResource(R.string.perform_gesture_label, gesture.value.gestureName),
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        VideoPlayer(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .height(500.dp)
+                .fillMaxWidth(),
+            videoId = gesture.value.video
+        )
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+        Text(
+            stringResource(R.string.placeholder_instructions_label),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = {
+                onSelectScreen(lessonId)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                stringResource(R.string.perform_gesture_label, gesture.value.gestureName),
-                fontSize = 18.sp
-            )
+            Text(stringResource(R.string.lesson_instructions_button))
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(32.dp))
+@Composable
+fun IntervalInstructionsScreen(
+    lessonId: Int,
+    noteInterval: State<NoteInterval>,
+    onSelectScreen: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Play the following Note Interval: ${noteInterval.value.intervalName}",
+            fontSize = 18.sp
+        )
 
-            VideoPlayer(
-                modifier = Modifier
-                    .height(500.dp)
-                    .fillMaxWidth(),
-                videoId = gesture.value.video
-            )
+        Spacer(modifier = Modifier.height(156.dp))
 
-            Spacer(modifier = Modifier.height(48.dp))
+        Text(
+            stringResource(R.string.note_interval_instructions_placeholder_text),
+            textAlign = TextAlign.Center
+        )
 
-            Text(
-                stringResource(R.string.placeholder_instructions_label),
-                textAlign = TextAlign.Center
-            )
+        Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = {
-                    selectedScreen = lessonId
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lesson_instructions_button))
-            }
+        Button(
+            onClick = {
+                onSelectScreen(lessonId)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.lesson_instructions_button))
         }
     }
 }
@@ -354,52 +441,147 @@ fun NoteIntervalLessonScreen(
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
     detectNoteInterval: Boolean,
+    onNextClick: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    startAudio()
+    var showSecondButton by remember { mutableStateOf(false) }
+    var showFinalButton by remember { mutableStateOf(false) }
+    var finalButtonClicked by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(36.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Note Interval: ${noteInterval.value}", fontSize = 18.sp)
+    val audioPermission = Manifest.permission.RECORD_AUDIO
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            startAudio()
         }
+    }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(36.dp),
-            contentAlignment = Alignment.Center
+    LaunchedEffect(true) {
+        if (ContextCompat.checkSelfPermission(
+                context, audioPermission
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Text("Note: $note", fontSize = 18.sp)
+            launcher.launch(audioPermission)
+        } else {
+            startAudio()
         }
+    }
 
-        Box(
+    if (!finalButtonClicked) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp)
+                .padding(16.dp)
         ) {
-            Column {
-                Button(
-                    onClick = captureFirstNote
-                ) {
-                    Text("Capture First Note")
-                }
-
-                Button(
-                    onClick = captureSecondNote
-                ) {
-                    Text("Capture Second Note")
-                }
-
-                if (detectNoteInterval) Text("Correct!") else Text("False!")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Play this note interval: ${noteInterval.value.intervalName}",
+                    fontSize = 18.sp
+                )
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Note: ${note}", fontSize = 24.sp)
+
+                Spacer(modifier = Modifier.height(64.dp))
+
+                if (!showSecondButton) {
+                    Button(
+                        onClick = {
+                            captureFirstNote()
+                            showSecondButton = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.capture_first_note_button))
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            captureSecondNote()
+                            showFinalButton = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.capture_second_note_button))
+                    }
+                }
+
+                if (showFinalButton) {
+                    Button(
+                        onClick = {
+                            finalButtonClicked = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.proceed_to_next_screen_button))
+                    }
+                }
+            }
+        }
+    } else {
+        IntervalReviewScreen(
+            isIntervalCorrect = detectNoteInterval,
+            onNextClick = onNextClick,
+            modifier = Modifier
+                .fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun IntervalReviewScreen(
+    isIntervalCorrect: Boolean,
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        if (isIntervalCorrect) Text(
+            "Note interval was correct!", modifier = Modifier.align(
+                Alignment.Center
+            )
+        ) else Text(
+            "Note interval was false, try again!", modifier = Modifier.align(
+                Alignment.Center
+            )
+        )
+
+        Button(
+            onClick = onNextClick,
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        ) {
+            Text(stringResource(R.string.proceed_to_next_screen_button))
         }
     }
 }
