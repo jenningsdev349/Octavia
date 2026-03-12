@@ -38,4 +38,6 @@
     <string name="capture_first_note_button">Capture first note</string>
     <string name="capture_second_note_button">Capture second note</string>
     <string name="proceed_to_next_screen_button">Proceed to next screen</string>
+    <string name="note_interval_correct">Note interval was correct!</string>
+    <string name="note_interval_incorrect">Note interval was false, try again!</string>
 </resources>

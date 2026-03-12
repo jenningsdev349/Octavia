@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -122,6 +124,17 @@ fun LessonScreen(
             modifier = modifier
         )
 
+        4 -> NoteIntervalCameraLessonScreen(
+            note = note,
+            noteInterval = noteInterval,
+            captureFirstNote = captureFirstNote,
+            captureSecondNote = captureSecondNote,
+            detectNoteInterval = detectNoteInterval,
+            onNextClick = onNextClick,
+            startAudio = startAudio,
+            modifier = modifier
+        )
+
         null -> InstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = { selectedScreen = it },
@@ -156,6 +169,13 @@ fun InstructionsScreen(
         )
 
         3 -> IntervalInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            noteInterval = noteInterval,
+            modifier = modifier
+        )
+
+        4 -> IntervalInstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = onSelectScreen,
             noteInterval = noteInterval,
@@ -554,34 +574,229 @@ fun NoteIntervalLessonScreen(
 }
 
 @Composable
+fun NoteIntervalCameraLessonScreen(
+    note: String?,
+    noteInterval: State<NoteInterval>,
+    captureFirstNote: () -> Unit,
+    captureSecondNote: () -> Unit,
+    detectNoteInterval: Boolean,
+    onNextClick: () -> Unit,
+    startAudio: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showSecondButton by remember { mutableStateOf(false) }
+    var showFinalButton by remember { mutableStateOf(false) }
+    var finalButtonClicked by remember { mutableStateOf(false) }
+
+    var capturedBitmap1 by remember { mutableStateOf<Bitmap?>(null) }
+    var capturedBitmap2 by remember { mutableStateOf<Bitmap?>(null) }
+    val bitmaps = listOf(capturedBitmap1, capturedBitmap2)
+
+    val audioPermission = Manifest.permission.RECORD_AUDIO
+    val context = LocalContext.current
+
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(CameraController.IMAGE_CAPTURE)
+            cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            startAudio()
+        }
+    }
+
+    LaunchedEffect(true) {
+        if (ContextCompat.checkSelfPermission(
+                context, audioPermission
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            launcher.launch(audioPermission)
+        } else {
+            startAudio()
+        }
+    }
+
+    if (!finalButtonClicked) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Perform this note interval: ${noteInterval.value.intervalName}",
+                    fontSize = 18.sp
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Note: $note", fontSize = 18.sp)
+            }
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+
+                CameraPreview(
+                    controller = controller, modifier = modifier.fillMaxSize()
+                )
+
+
+                if (!showSecondButton) {
+                    Button(
+                        onClick = {
+                            takePhoto(
+                                controller = controller, onPhotoTaken = { bitmap ->
+                                    capturedBitmap1 = bitmap
+                                }, context = context
+                            )
+                            captureFirstNote()
+                            showSecondButton = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(stringResource(R.string.capture_first_note_button))
+                    }
+
+                } else {
+                    Button(
+                        onClick = {
+                            takePhoto(
+                                controller = controller, onPhotoTaken = { bitmap ->
+                                    capturedBitmap2 = bitmap
+                                }, context = context
+                            )
+                            captureSecondNote()
+                            showFinalButton = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(stringResource(R.string.capture_second_note_button))
+                    }
+                }
+
+                if (showFinalButton) {
+                    Button(
+                        onClick = {
+                            finalButtonClicked = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(stringResource(R.string.proceed_to_next_screen_button))
+                    }
+                }
+            }
+        }
+    } else {
+        IntervalReviewScreen(
+            isIntervalCorrect = detectNoteInterval,
+            capturedBitmaps = bitmaps,
+            onNextClick = onNextClick,
+            modifier = Modifier
+                .fillMaxSize()
+        )
+    }
+}
+
+
+@Composable
 fun IntervalReviewScreen(
     isIntervalCorrect: Boolean,
+    capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        if (isIntervalCorrect) Text(
-            "Note interval was correct!", modifier = Modifier.align(
-                Alignment.Center
-            )
-        ) else Text(
-            "Note interval was false, try again!", modifier = Modifier.align(
-                Alignment.Center
-            )
-        )
+    val pagerState = rememberPagerState(
+        pageCount = { capturedBitmaps?.size!! }
+    )
 
-        Button(
-            onClick = onNextClick,
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+    if (capturedBitmaps?.isEmpty()!!) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .fillMaxSize(),
         ) {
-            Text(stringResource(R.string.proceed_to_next_screen_button))
+            if (isIntervalCorrect) Text(
+                stringResource(R.string.note_interval_correct), modifier = Modifier.align(
+                    Alignment.Center
+                )
+            ) else Text(
+                stringResource(R.string.note_interval_incorrect), modifier = Modifier.align(
+                    Alignment.Center
+                )
+            )
+
+            Button(
+                onClick = onNextClick,
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.proceed_to_next_screen_button))
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isIntervalCorrect) Text(stringResource(R.string.note_interval_correct)) else Text(
+                    stringResource(R.string.note_interval_incorrect)
+                )
+            }
+
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                    key = { capturedBitmaps[it]!! }
+                ) { index ->
+                    Image(
+                        bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Button(
+                    onClick = { onNextClick() },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp)
+                ) {
+                    Text(stringResource(R.string.next_button))
+                }
+            }
         }
     }
 }
