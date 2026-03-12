@@ -182,6 +182,7 @@ class MainActivity : ComponentActivity() {
                                 val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 val note by viewModel.note.collectAsStateWithLifecycle()
                                 val gesture = viewModel.gesture.collectAsState()
+                                val noteInterval = viewModel.noteInterval.collectAsState()
 
                                 LessonScreen(
                                     lessonId = lessonId,
@@ -189,9 +190,13 @@ class MainActivity : ComponentActivity() {
                                     navController = navController,
                                     gesture = gesture,
                                     note = note,
+                                    noteInterval = noteInterval,
                                     startAudio = { viewModel.startAudio() },
                                     isMajorNoteCorrect = viewModel.isMajorNoteCorrect(),
                                     isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),
+                                    captureFirstNote = { viewModel.captureFirstNote() },
+                                    captureSecondNote = { viewModel.captureSecondNote() },
+                                    detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),

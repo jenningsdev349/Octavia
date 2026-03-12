@@ -34,4 +34,10 @@
     <string name="incorrect_note_label">Incorrect Note, try again!</string>
     <string name="lesson_instructions_button">Continue to Lesson</string>
     <string name="placeholder_instructions_label">Sing the correct note and perform correct gesture. Screen will flash green when singing correct note.</string>
+    <string name="note_interval_instructions_placeholder_text">Your task is to play 2 notes that correspond to the appropriate note interval. For example, if you are asked to play a major third, any 2 notes 4 semitones apart will be a valid answer. You will play a first note, hold it, and capture that note\'s value by pressing a button. You will do the same with the second. When this is done, your result will be displayed on screen.</string>
+    <string name="capture_first_note_button">Capture first note</string>
+    <string name="capture_second_note_button">Capture second note</string>
+    <string name="proceed_to_next_screen_button">Proceed to next screen</string>
+    <string name="note_interval_correct">Note interval was correct!</string>
+    <string name="note_interval_incorrect">Note interval was false, try again!</string>
 </resources>
