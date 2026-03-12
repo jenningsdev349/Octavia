@@ -10,7 +10,7 @@ object PitchConverterHelper {
         return midiToNote(midi)
     }
 
-    private fun hzToMidi(freq: Float): Int =
+    fun hzToMidi(freq: Float): Int =
         (69 + 12 * log2(freq / 440f)).roundToInt()
 
     private fun midiToNote(midi: Int): String {
