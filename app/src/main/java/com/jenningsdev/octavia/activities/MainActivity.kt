@@ -27,6 +27,7 @@ import androidx.navigation.navArgument
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
+import com.jenningsdev.octavia.ui.screens.AnalyticsScreen
 import com.jenningsdev.octavia.ui.screens.BottomNavigationBar
 import com.jenningsdev.octavia.ui.screens.DashboardScreen
 import com.jenningsdev.octavia.ui.screens.GestureReviewScreen
@@ -40,6 +41,7 @@ import com.jenningsdev.octavia.ui.screens.SplashScreen
 import com.jenningsdev.octavia.ui.theme.OctaviaTheme
 import com.jenningsdev.octavia.ui.viewmodels.DashboardViewModel
 import com.jenningsdev.octavia.ui.viewmodels.GestureReviewViewModel
+import com.jenningsdev.octavia.ui.viewmodels.HomeScreenViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LessonListViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LessonViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LoginViewModel
@@ -143,7 +145,14 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(NavRoutes.dashboard.route) {
-                                HomeScreen()
+                                val viewModel = viewModel<HomeScreenViewModel>()
+                                val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
+
+                                HomeScreen(
+                                    navigationEvent = navigationEvent,
+                                    navController = navController,
+                                    onClickAboutCard = { viewModel.onClickAboutCard() }
+                                )
                             }
                             composable(NavRoutes.lessonList.route) {
                                 val viewModel = viewModel<LessonListViewModel>()
@@ -165,10 +174,14 @@ class MainActivity : ComponentActivity() {
 
                                 ProfileScreen(
                                     onSignOutClick = { viewModel.onSignOutClick() },
+                                    onAnalyticsClick = { viewModel.onAnalyticsClick() },
                                     navigationEvent = navigationEvent,
                                     navController = navController,
                                     username = uiState.username
                                 )
+                            }
+                            composable(NavRoutes.analytics.route) {
+                                AnalyticsScreen()
                             }
                             composable(
                                 route = NavRoutes.lesson.routeArg!!,
@@ -198,6 +211,9 @@ class MainActivity : ComponentActivity() {
                                     isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),
                                     captureFirstNote = { viewModel.captureFirstNote() },
                                     captureSecondNote = { viewModel.captureSecondNote() },
+                                    updateLessonsComplete = { viewModel.updateLessonsComplete() },
+                                    updateLessonStatNoteCorrect = { viewModel.updateLessonStatNoteCorrect() },
+                                    updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
                                     detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },
                                     onNextClick = { viewModel.onNextClick() },
@@ -214,6 +230,9 @@ class MainActivity : ComponentActivity() {
                                     navController = navController,
                                     reviewItems = reviewItems,
                                     onNextClick = { viewModel.onNextClick() },
+                                    updateLessonStatBetter = { viewModel.updateLessonStatBetter() },
+                                    updateLessonStatOkay = { viewModel.updateLessonStatOkay() },
+                                    updateLessonStatGreat = { viewModel.updateLessonStatGreat() },
                                     modifier = Modifier.fillMaxSize()
                                 )
                             }

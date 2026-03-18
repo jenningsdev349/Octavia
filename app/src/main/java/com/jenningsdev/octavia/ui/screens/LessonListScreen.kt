@@ -40,12 +40,6 @@ fun LessonListScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box {
-            Text("Lessons Completed: 0/8")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Box {
             LessonListContent(
                 lessons = lessons,
                 onClick = { lessonId: Int ->

@@ -30,16 +30,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
+import com.jenningsdev.octavia.data.model.models.GestureRating
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 
 @Composable
 fun GestureReviewScreen(
     navigationEvent: String?,
     navController: NavController,
-    reviewItems: List<String>,
+    reviewItems: List<GestureRating>,
     onNextClick: () -> Unit,
+    updateLessonStatOkay: () -> Unit,
+    updateLessonStatBetter: () -> Unit,
+    updateLessonStatGreat: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
+
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
             "lessonList" -> {
@@ -64,12 +70,31 @@ fun GestureReviewScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             ReviewDropdownMenu(
-                reviewItems = reviewItems
+                reviewItems = reviewItems,
+                selectedItem = selectedItem,
+                onItemSelected = { item ->
+                    selectedItem = item
+                }
             )
         }
 
         Button(
-            onClick = { onNextClick() },
+            onClick = {
+                when (selectedItem.id) {
+                    1 -> {
+                        updateLessonStatBetter()
+                        onNextClick()
+                    }
+                    2 -> {
+                        updateLessonStatOkay()
+                        onNextClick()
+                    }
+                    3 -> {
+                        updateLessonStatGreat()
+                        onNextClick()
+                    }
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -83,17 +108,18 @@ fun GestureReviewScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewDropdownMenu(
-    reviewItems: List<String>,
-    ) {
+    reviewItems: List<GestureRating>,
+    selectedItem: GestureRating,
+    onItemSelected: (GestureRating) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
         TextField(
-            value = selectedItem,
+            value = selectedItem.ratingName,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(R.string.rate_label)) },
@@ -110,9 +136,9 @@ fun ReviewDropdownMenu(
         ) {
             reviewItems.forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(item) },
+                    text = { Text(item.ratingName) },
                     onClick = {
-                        selectedItem = item
+                        onItemSelected(item)
                         expanded = false
                     }
                 )

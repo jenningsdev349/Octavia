@@ -1,6 +1,9 @@
 package com.jenningsdev.octavia.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +22,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +33,24 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
 
 @Composable
 fun HomeScreen(
+    navigationEvent: String?,
+    navController: NavController,
+    onClickAboutCard: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            "analytics" -> {
+                navController.navigate("analytics")
+            }
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -53,6 +70,7 @@ fun HomeScreen(
             title = "Continue Lesson",
             description = "Continue lesson plan from where you left off.",
             image = painterResource(id = R.drawable.about_card),
+            modifier = Modifier
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -61,6 +79,12 @@ fun HomeScreen(
             title = "Analytics",
             description = "View user analytics, grades, achievements.",
             image = painterResource(id = R.drawable.takadimi),
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current,
+                    onClick = { onClickAboutCard() }
+                )
         )
     }
 }
@@ -83,7 +107,9 @@ fun StreaksCard(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().padding(8.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
         ) {
             Image(
                 painter = image,
@@ -116,9 +142,10 @@ fun AboutCard(
     title: String,
     description: String,
     image: Painter,
+    modifier: Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
         shape = RoundedCornerShape(16.dp),

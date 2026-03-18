@@ -78,6 +78,9 @@ fun LessonScreen(
     isMinorNoteCorrect: Boolean,
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -86,8 +89,8 @@ fun LessonScreen(
 
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
-            "lessonList" -> {
-                navController.navigate(NavRoutes.lessonList.route)
+            "gestureReview" -> {
+                navController.navigate(NavRoutes.gestureReview.route)
             }
         }
     }
@@ -99,6 +102,8 @@ fun LessonScreen(
             stopAudio = stopAudio,
             isNoteCorrect = isMajorNoteCorrect,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -109,6 +114,8 @@ fun LessonScreen(
             stopAudio = stopAudio,
             isNoteCorrect = isMinorNoteCorrect,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -120,6 +127,8 @@ fun LessonScreen(
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -131,6 +140,8 @@ fun LessonScreen(
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -295,6 +306,8 @@ fun PhotoReviewScreen(
     bitmap: Bitmap,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -323,7 +336,13 @@ fun PhotoReviewScreen(
             )
 
             Button(
-                onClick = { onNextClick() },
+                onClick = {
+                    if (isNoteCorrect) {
+                        updateLessonStatNoteCorrect()
+                    }
+                    updateLessonsComplete()
+                    onNextClick()
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -343,6 +362,8 @@ fun ScaleLessonScreen(
     stopAudio: () -> Unit,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -452,7 +473,9 @@ fun ScaleLessonScreen(
             bitmap = capturedBitmap!!,
             isNoteCorrect = isNoteCorrect,
             onNextClick = onNextClick,
-            modifier = modifier.fillMaxSize()
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            modifier = modifier.fillMaxSize(),
         )
     }
 }
@@ -465,6 +488,8 @@ fun NoteIntervalLessonScreen(
     captureSecondNote: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -570,6 +595,8 @@ fun NoteIntervalLessonScreen(
         IntervalReviewScreen(
             isIntervalCorrect = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -584,6 +611,8 @@ fun NoteIntervalCameraLessonScreen(
     captureSecondNote: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -716,6 +745,8 @@ fun NoteIntervalCameraLessonScreen(
             isIntervalCorrect = detectNoteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -728,6 +759,8 @@ fun IntervalReviewScreen(
     isIntervalCorrect: Boolean,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(
@@ -791,7 +824,13 @@ fun IntervalReviewScreen(
                 }
 
                 Button(
-                    onClick = { onNextClick() },
+                    onClick = {
+                        if (isIntervalCorrect) {
+                            updateLessonStatIntervalCorrect()
+                        }
+                        updateLessonsComplete()
+                        onNextClick()
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                     modifier = Modifier
                         .align(Alignment.BottomCenter)

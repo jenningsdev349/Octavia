@@ -9,4 +9,5 @@ sealed class NavRoutes(val route: String, val routeArg: String? = null) {
     data object profile: NavRoutes("profile")
     data object lesson: NavRoutes("lesson", routeArg = "lesson/{lessonId}")
     data object gestureReview: NavRoutes("gestureReview")
+    data object analytics: NavRoutes("analytics")
 }
