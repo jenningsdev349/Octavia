@@ -1,17 +1,22 @@
 package com.jenningsdev.octavia.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.jenningsdev.octavia.data.audio.AudioEngine
 import com.jenningsdev.octavia.data.audio.PitchConverterHelper.hzToMidi
 import com.jenningsdev.octavia.data.model.models.Gesture
 import com.jenningsdev.octavia.data.model.models.NoteInterval
+import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LessonViewModel : ViewModel() {
+class LessonViewModel(application: Application) : AndroidViewModel(application) {
+    private val userRepository: UserRepository =
+        UserRepository(context = application.applicationContext)
+
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
 
@@ -50,6 +55,36 @@ class LessonViewModel : ViewModel() {
         }
     }
 
+    fun updateLessonsComplete() {
+        viewModelScope.launch {
+            userRepository.updateLessonsComplete()
+        }
+    }
+
+    fun updateLessonStatNoteCorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatNoteCorrect()
+        }
+    }
+
+    fun updateLessonStatNoteIncorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatNoteIncorrect()
+        }
+    }
+
+    fun updateLessonStatIntervalCorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatIntervalCorrect()
+        }
+    }
+
+    fun updateLessonStatIntervalIncorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatIntervalIncorrect()
+        }
+    }
+
     fun isMajorNoteCorrect(): Boolean {
         return _note.value == _gesture.value.majorNote
     }
@@ -80,6 +115,6 @@ class LessonViewModel : ViewModel() {
     }
 
     fun onNextClick() {
-        _navigationEvent.value = NavRoutes.lessonList.route
+        _navigationEvent.value = NavRoutes.gestureReview.route
     }
 }

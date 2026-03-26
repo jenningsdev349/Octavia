@@ -13,6 +13,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +32,7 @@ import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 import com.jenningsdev.octavia.ui.screens.BottomNavigationBar
 import com.jenningsdev.octavia.ui.screens.DashboardScreen
+import com.jenningsdev.octavia.ui.screens.GestureReviewScreen
 import com.jenningsdev.octavia.ui.screens.HomeScreen
 import com.jenningsdev.octavia.ui.screens.LessonListScreen
 import com.jenningsdev.octavia.ui.screens.LessonScreen
@@ -38,6 +42,8 @@ import com.jenningsdev.octavia.ui.screens.SignUpScreen
 import com.jenningsdev.octavia.ui.screens.SplashScreen
 import com.jenningsdev.octavia.ui.theme.OctaviaTheme
 import com.jenningsdev.octavia.ui.viewmodels.DashboardViewModel
+import com.jenningsdev.octavia.ui.viewmodels.GestureReviewViewModel
+import com.jenningsdev.octavia.ui.viewmodels.HomeScreenViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LessonListViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LessonViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LoginViewModel
@@ -141,7 +147,38 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(NavRoutes.dashboard.route) {
-                                HomeScreen()
+                                val viewModel = viewModel<HomeScreenViewModel>()
+                                var lessonsComplete by remember { mutableStateOf(0) }
+                                var lessonStatBetter by remember { mutableStateOf(0) }
+                                var lessonStatOkay by remember { mutableStateOf(0) }
+                                var lessonStatGreat by remember { mutableStateOf(0) }
+                                var lessonStatNoteCorrect by remember { mutableStateOf(0) }
+                                var lessonStatNoteIncorrect by remember { mutableStateOf(0) }
+                                var lessonStatIntervalCorrect by remember { mutableStateOf(0) }
+                                var lessonStatIntervalIncorrect by remember { mutableStateOf(0) }
+
+                                LaunchedEffect(Unit) {
+                                    lessonsComplete = viewModel.getLessonsComplete()
+                                    lessonStatBetter = viewModel.getLessonStatBetter()
+                                    lessonStatOkay = viewModel.getLessonStatOkay()
+                                    lessonStatGreat = viewModel.getLessonStatGreat()
+                                    lessonStatNoteCorrect = viewModel.getLessonStatNoteCorrect()
+                                    lessonStatNoteIncorrect = viewModel.getLessonStatNoteIncorrect()
+                                    lessonStatIntervalCorrect = viewModel.getLessonStatIntervalCorrect()
+                                    lessonStatIntervalIncorrect = viewModel.getLessonStatIntervalIncorrect()
+                                }
+
+                                HomeScreen(
+                                    lessonsComplete = lessonsComplete,
+                                    lessonStatBetter = lessonStatBetter,
+                                    lessonStatOkay = lessonStatOkay,
+                                    lessonStatGreat = lessonStatGreat,
+                                    lessonStatNoteCorrect = lessonStatNoteCorrect,
+                                    lessonStatNoteIncorrect = lessonStatNoteIncorrect,
+                                    lessonStatIntervalCorrect = lessonStatIntervalCorrect,
+                                    lessonStatIntervalIncorrect = lessonStatIntervalIncorrect,
+                                    modifier = Modifier.fillMaxSize()
+                                )
                             }
                             composable(NavRoutes.lessonList.route) {
                                 val viewModel = viewModel<LessonListViewModel>()
@@ -163,6 +200,7 @@ class MainActivity : ComponentActivity() {
 
                                 ProfileScreen(
                                     onSignOutClick = { viewModel.onSignOutClick() },
+                                    onAnalyticsClick = { viewModel.onAnalyticsClick() },
                                     navigationEvent = navigationEvent,
                                     navController = navController,
                                     username = uiState.username
@@ -196,10 +234,31 @@ class MainActivity : ComponentActivity() {
                                     isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),
                                     captureFirstNote = { viewModel.captureFirstNote() },
                                     captureSecondNote = { viewModel.captureSecondNote() },
+                                    updateLessonsComplete = { viewModel.updateLessonsComplete() },
+                                    updateLessonStatNoteCorrect = { viewModel.updateLessonStatNoteCorrect() },
+                                    updateLessonStatNoteIncorrect = { viewModel.updateLessonStatNoteIncorrect() },
+                                    updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
+                                    updateLessonStatIntervalIncorrect = { viewModel.updateLessonStatIntervalIncorrect() },
                                     detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                            composable(NavRoutes.gestureReview.route) {
+                                val viewModel = viewModel<GestureReviewViewModel>()
+                                val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
+                                val reviewItems = viewModel.reviewItems
+
+                                GestureReviewScreen(
+                                    navigationEvent = navigationEvent,
+                                    navController = navController,
+                                    reviewItems = reviewItems,
+                                    onNextClick = { viewModel.onNextClick() },
+                                    updateLessonStatBetter = { viewModel.updateLessonStatBetter() },
+                                    updateLessonStatOkay = { viewModel.updateLessonStatOkay() },
+                                    updateLessonStatGreat = { viewModel.updateLessonStatGreat() },
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                         }

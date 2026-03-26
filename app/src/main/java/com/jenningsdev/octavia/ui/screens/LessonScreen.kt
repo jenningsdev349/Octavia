@@ -78,6 +78,11 @@ fun LessonScreen(
     isMinorNoteCorrect: Boolean,
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -86,8 +91,8 @@ fun LessonScreen(
 
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
-            "lessonList" -> {
-                navController.navigate(NavRoutes.lessonList.route)
+            "gestureReview" -> {
+                navController.navigate(NavRoutes.gestureReview.route)
             }
         }
     }
@@ -99,6 +104,9 @@ fun LessonScreen(
             stopAudio = stopAudio,
             isNoteCorrect = isMajorNoteCorrect,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -109,6 +117,9 @@ fun LessonScreen(
             stopAudio = stopAudio,
             isNoteCorrect = isMinorNoteCorrect,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -120,6 +131,9 @@ fun LessonScreen(
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -131,6 +145,9 @@ fun LessonScreen(
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -284,7 +301,8 @@ fun CameraPreview(
                     this.controller = controller
                     controller.bindToLifecycle(lifecycleOwner)
                 }
-            }, modifier = modifier
+            },
+            modifier = modifier
         )
     }
 }
@@ -294,6 +312,9 @@ fun PhotoReviewScreen(
     bitmap: Bitmap,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -306,7 +327,8 @@ fun PhotoReviewScreen(
             contentAlignment = Alignment.Center
         ) {
             if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
-                stringResource(R.string.incorrect_note_label)
+                stringResource(R.string.incorrect_note_label),
+                fontSize = 24.sp
             )
         }
 
@@ -321,7 +343,16 @@ fun PhotoReviewScreen(
             )
 
             Button(
-                onClick = { onNextClick() },
+                onClick = {
+                    if (isNoteCorrect) {
+                        updateLessonStatNoteCorrect()
+                    }
+                    else {
+                        updateLessonStatNoteIncorrect()
+                    }
+                    updateLessonsComplete()
+                    onNextClick()
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -341,6 +372,9 @@ fun ScaleLessonScreen(
     stopAudio: () -> Unit,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -429,7 +463,8 @@ fun ScaleLessonScreen(
                             takePhoto(
                                 controller = controller, onPhotoTaken = { bitmap ->
                                     capturedBitmap = bitmap
-                                }, context = context
+                                },
+                                context = context
                             )
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -449,7 +484,10 @@ fun ScaleLessonScreen(
             bitmap = capturedBitmap!!,
             isNoteCorrect = isNoteCorrect,
             onNextClick = onNextClick,
-            modifier = modifier.fillMaxSize()
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
+            modifier = modifier.fillMaxSize(),
         )
     }
 }
@@ -462,6 +500,9 @@ fun NoteIntervalLessonScreen(
     captureSecondNote: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -567,6 +608,9 @@ fun NoteIntervalLessonScreen(
         IntervalReviewScreen(
             isIntervalCorrect = detectNoteInterval,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -581,6 +625,9 @@ fun NoteIntervalCameraLessonScreen(
     captureSecondNote: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -713,6 +760,9 @@ fun NoteIntervalCameraLessonScreen(
             isIntervalCorrect = detectNoteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -725,6 +775,9 @@ fun IntervalReviewScreen(
     isIntervalCorrect: Boolean,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(
@@ -788,7 +841,15 @@ fun IntervalReviewScreen(
                 }
 
                 Button(
-                    onClick = { onNextClick() },
+                    onClick = {
+                        if (isIntervalCorrect) {
+                            updateLessonStatIntervalCorrect()
+                        } else {
+                            updateLessonStatIntervalIncorrect()
+                        }
+                        updateLessonsComplete()
+                        onNextClick()
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                     modifier = Modifier
                         .align(Alignment.BottomCenter)

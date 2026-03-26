@@ -88,7 +88,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun createNewUser(uid: String?, email: String, name: String) {
-        val user = User(email, name)
+        val user = User(
+            email,
+            name,
+            lessonsComplete = 0,
+            lessonStatBetter = 0,
+            lessonStatOkay = 0,
+            lessonStatGreat = 0,
+            lessonStatNoteCorrect = 0,
+            lessonStatNoteIncorrect = 0,
+            lessonStatIntervalCorrect = 0,
+            lessonStatIntervalIncorrect = 0,
+            points = 0
+        )
         if (uid != null) {
             database.child("users").child(uid).setValue(user)
         }

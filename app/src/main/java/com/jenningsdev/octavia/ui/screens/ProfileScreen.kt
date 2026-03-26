@@ -33,6 +33,7 @@ import com.jenningsdev.octavia.ui.navigation.NavRoutes
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    onAnalyticsClick: () -> Unit,
     onSignOutClick: () -> Unit,
     navController: NavController,
     username: String?,
@@ -44,6 +45,10 @@ fun ProfileScreen(
                 navController.navigate(NavRoutes.splashScreen.route) {
                     popUpTo(0) { inclusive = true }
                 }
+            }
+
+            "analytics" -> {
+                navController.navigate("analytics")
             }
         }
     }
@@ -85,7 +90,7 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = { },
+                    onClick = { onAnalyticsClick() },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour2)),
                     modifier = Modifier.fillMaxWidth()
                 ) {

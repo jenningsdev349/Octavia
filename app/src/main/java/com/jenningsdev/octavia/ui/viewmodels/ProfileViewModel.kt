@@ -26,13 +26,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun getUsername() {
         viewModelScope.launch {
-            val name = userRepository.fetchCurrentUserName()
+            val name = userRepository.getCurrentUserName()
             _uiState.update {
                 it.copy(
                     username = name
                 )
             }
         }
+    }
+
+    fun onAnalyticsClick() {
+        _navigationEvent.value = NavRoutes.analytics.route
     }
 
     fun onSignOutClick() {
