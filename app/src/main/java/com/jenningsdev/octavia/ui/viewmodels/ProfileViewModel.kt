@@ -35,12 +35,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun testUpdate() {
-        viewModelScope.launch {
-            userRepository.updateLessonsComplete()
-        }
-    }
-
     fun onAnalyticsClick() {
         _navigationEvent.value = NavRoutes.analytics.route
     }

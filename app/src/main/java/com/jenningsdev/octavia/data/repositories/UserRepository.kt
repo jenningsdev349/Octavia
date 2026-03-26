@@ -20,7 +20,7 @@ class UserRepository(
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
     }
 
-    suspend fun getLessonsComplete(): Int? {
+    suspend fun getLessonsComplete(): Int {
         val lessonsComplete: Int? = database
             .child("users")
             .child(uid)
@@ -28,7 +28,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonsComplete
+        return lessonsComplete ?: 0
     }
 
     suspend fun updateLessonsComplete() {
@@ -49,7 +49,7 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatOkay(): Int? {
+    suspend fun getLessonStatOkay(): Int {
         val lessonStatOkay: Int? = database
             .child("users")
             .child(uid)
@@ -57,7 +57,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonStatOkay
+        return lessonStatOkay ?: 0
     }
 
     suspend fun updateLessonStatOkay() {
@@ -78,7 +78,7 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatBetter(): Int? {
+    suspend fun getLessonStatBetter(): Int {
         val lessonStatBetter: Int? = database
             .child("users")
             .child(uid)
@@ -86,7 +86,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonStatBetter
+        return lessonStatBetter ?: 0
     }
 
     suspend fun updateLessonStatBetter() {
@@ -107,7 +107,7 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatGreat(): Int? {
+    suspend fun getLessonStatGreat(): Int {
         val lessonStatGreat: Int? = database
             .child("users")
             .child(uid)
@@ -115,7 +115,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonStatGreat
+        return lessonStatGreat ?: 0
     }
 
     suspend fun updateLessonStatGreat() {
@@ -136,7 +136,7 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatNoteCorrect(): Int? {
+    suspend fun getLessonStatNoteCorrect(): Int {
         val lessonStatNoteCorrect: Int? = database
             .child("users")
             .child(uid)
@@ -144,7 +144,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonStatNoteCorrect
+        return lessonStatNoteCorrect ?: 0
     }
 
     suspend fun updateLessonStatNoteCorrect() {
@@ -165,7 +165,36 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatIntervalCorrect(): Int? {
+    suspend fun getLessonStatNoteIncorrect(): Int {
+        val lessonStatNoteIncorrect: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatNoteIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return lessonStatNoteIncorrect ?: 0
+    }
+
+    suspend fun updateLessonStatNoteIncorrect() {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatNoteIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (lessonStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonStatNoteIncorrect")
+                .setValue(lessonStat + 1)
+        }
+    }
+
+    suspend fun getLessonStatIntervalCorrect(): Int {
         val lessonStatIntervalCorrect: Int? = database
             .child("users")
             .child(uid)
@@ -173,7 +202,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(Int::class.java)
-        return lessonStatIntervalCorrect
+        return lessonStatIntervalCorrect ?: 0
     }
 
     suspend fun updateLessonStatIntervalCorrect() {
@@ -190,6 +219,35 @@ class UserRepository(
                 .child("users")
                 .child(uid)
                 .child("lessonStatIntervalCorrect")
+                .setValue(lessonStat + 1)
+        }
+    }
+
+    suspend fun getLessonStatIntervalIncorrect(): Int {
+        val lessonStatIntervalIncorrect: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatIntervalIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return lessonStatIntervalIncorrect ?: 0
+    }
+
+    suspend fun updateLessonStatIntervalIncorrect() {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatIntervalIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (lessonStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonStatIntervalIncorrect")
                 .setValue(lessonStat + 1)
         }
     }

@@ -80,7 +80,9 @@ fun LessonScreen(
     captureSecondNote: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -104,6 +106,7 @@ fun LessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -116,6 +119,7 @@ fun LessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             gesture = gesture,
             modifier = modifier
         )
@@ -129,6 +133,7 @@ fun LessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -142,6 +147,7 @@ fun LessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -308,6 +314,7 @@ fun PhotoReviewScreen(
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -340,6 +347,9 @@ fun PhotoReviewScreen(
                     if (isNoteCorrect) {
                         updateLessonStatNoteCorrect()
                     }
+                    else {
+                        updateLessonStatNoteIncorrect()
+                    }
                     updateLessonsComplete()
                     onNextClick()
                 },
@@ -364,6 +374,7 @@ fun ScaleLessonScreen(
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
+    updateLessonStatNoteIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -475,6 +486,7 @@ fun ScaleLessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
+            updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             modifier = modifier.fillMaxSize(),
         )
     }
@@ -490,6 +502,7 @@ fun NoteIntervalLessonScreen(
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -597,6 +610,7 @@ fun NoteIntervalLessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -613,6 +627,7 @@ fun NoteIntervalCameraLessonScreen(
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -747,6 +762,7 @@ fun NoteIntervalCameraLessonScreen(
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
+            updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -761,6 +777,7 @@ fun IntervalReviewScreen(
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
+    updateLessonStatIntervalIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(
@@ -827,6 +844,8 @@ fun IntervalReviewScreen(
                     onClick = {
                         if (isIntervalCorrect) {
                             updateLessonStatIntervalCorrect()
+                        } else {
+                            updateLessonStatIntervalIncorrect()
                         }
                         updateLessonsComplete()
                         onNextClick()

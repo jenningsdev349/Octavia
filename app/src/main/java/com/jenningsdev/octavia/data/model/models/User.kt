@@ -8,6 +8,8 @@ data class User(
     val lessonStatOkay: Int,
     val lessonStatGreat: Int,
     val lessonStatNoteCorrect: Int,
+    val lessonStatNoteIncorrect: Int,
     val lessonStatIntervalCorrect: Int,
+    val lessonStatIntervalIncorrect: Int,
     val points: Int
 )

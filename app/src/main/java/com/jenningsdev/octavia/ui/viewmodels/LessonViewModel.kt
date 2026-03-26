@@ -67,9 +67,21 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun updateLessonStatNoteIncorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatNoteIncorrect()
+        }
+    }
+
     fun updateLessonStatIntervalCorrect() {
         viewModelScope.launch {
             userRepository.updateLessonStatIntervalCorrect()
+        }
+    }
+
+    fun updateLessonStatIntervalIncorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatIntervalIncorrect()
         }
     }
 

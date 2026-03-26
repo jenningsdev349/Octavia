@@ -42,4 +42,8 @@
     <string name="proceed_to_next_screen_button">Proceed to next screen</string>
     <string name="note_interval_correct">Note interval was correct!</string>
     <string name="note_interval_incorrect">Note interval was false, try again!</string>
+    <string name="lessons_complete_label">lessons complete!</string>
+    <string name="gesture_lesson_stats_label">Gesture Lesson Stats</string>
+    <string name="note_lesson_stats_label">Note Lesson Stats</string>
+    <string name="interval_lesson_stats_label">Interval Lesson Stats</string>
 </resources>
