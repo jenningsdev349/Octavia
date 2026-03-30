@@ -46,4 +46,6 @@
     <string name="gesture_lesson_stats_label">Gesture Lesson Stats</string>
     <string name="note_lesson_stats_label">Note Lesson Stats</string>
     <string name="interval_lesson_stats_label">Interval Lesson Stats</string>
+    <string name="capturing_photo_button">Capturing Photo...</string>
+    <string name="capturing_picture_label">Capturing picture in %1$s</string>
 </resources>

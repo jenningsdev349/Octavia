@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -17,6 +18,7 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +33,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +46,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,8 +69,11 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.model.models.Gesture
+import com.jenningsdev.octavia.data.model.models.GestureRating
 import com.jenningsdev.octavia.data.model.models.NoteInterval
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LessonScreen(
@@ -83,6 +94,10 @@ fun LessonScreen(
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
+    updateLessonStatOkay: () -> Unit,
+    updateLessonStatBetter: () -> Unit,
+    updateLessonStatGreat: () -> Unit,
+    reviewItems: List<GestureRating>,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -91,8 +106,8 @@ fun LessonScreen(
 
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
-            "gestureReview" -> {
-                navController.navigate(NavRoutes.gestureReview.route)
+            "lessonList" -> {
+                navController.navigate(NavRoutes.lessonList.route)
             }
         }
     }
@@ -107,6 +122,10 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
+            updateLessonStatOkay = updateLessonStatOkay,
+            updateLessonStatBetter = updateLessonStatBetter,
+            updateLessonStatGreat = updateLessonStatGreat,
+            reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
         )
@@ -120,6 +139,10 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
+            updateLessonStatOkay = updateLessonStatOkay,
+            updateLessonStatBetter = updateLessonStatBetter,
+            updateLessonStatGreat = updateLessonStatGreat,
+            reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
         )
@@ -148,6 +171,10 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
+            updateLessonStatOkay = updateLessonStatOkay,
+            updateLessonStatBetter = updateLessonStatBetter,
+            updateLessonStatGreat = updateLessonStatGreat,
+            reviewItems = reviewItems,
             startAudio = startAudio,
             modifier = modifier
         )
@@ -310,13 +337,24 @@ fun CameraPreview(
 @Composable
 fun PhotoReviewScreen(
     bitmap: Bitmap,
+    gesture: State<Gesture>,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
+    updateLessonStatOkay: () -> Unit,
+    updateLessonStatBetter: () -> Unit,
+    updateLessonStatGreat: () -> Unit,
+    reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
+    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
+
+    val pagerState = rememberPagerState(
+        pageCount = { 2 }
+    )
+
     Column(
         modifier = modifier
     ) {
@@ -335,30 +373,70 @@ fun PhotoReviewScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            HorizontalPager(
+                state = pagerState,
+            ) { index ->
+                when (index) {
+                    0 -> Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
 
-            Button(
-                onClick = {
-                    if (isNoteCorrect) {
-                        updateLessonStatNoteCorrect()
-                    }
-                    else {
-                        updateLessonStatNoteIncorrect()
-                    }
-                    updateLessonsComplete()
-                    onNextClick()
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    1 -> VideoPlayer(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        videoId = gesture.value.video
+                    )
+                }
+            }
+
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(stringResource(R.string.next_button))
+                ReviewDropdownMenu(
+                    reviewItems = reviewItems,
+                    selectedItem = selectedItem,
+                    onItemSelected = { item ->
+                        selectedItem = item
+                    }
+                )
+
+                Button(
+                    onClick = {
+                        when (selectedItem.id) {
+                            1 -> {
+                                updateLessonStatBetter()
+                                onNextClick()
+                            }
+
+                            2 -> {
+                                updateLessonStatOkay()
+                                onNextClick()
+                            }
+
+                            3 -> {
+                                updateLessonStatGreat()
+                                onNextClick()
+                            }
+                        }
+                        if (isNoteCorrect) {
+                            updateLessonStatNoteCorrect()
+                        } else {
+                            updateLessonStatNoteIncorrect()
+                        }
+                        updateLessonsComplete()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Text(stringResource(R.string.next_button))
+                }
             }
         }
     }
@@ -375,13 +453,25 @@ fun ScaleLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
+    updateLessonStatOkay: () -> Unit,
+    updateLessonStatBetter: () -> Unit,
+    updateLessonStatGreat: () -> Unit,
+    reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val cameraPermission = Manifest.permission.CAMERA
     val audioPermission = Manifest.permission.RECORD_AUDIO
 
+    val coroutineScope = rememberCoroutineScope()
+
+    var secondsLeft by remember { mutableStateOf(5) }
+    var timerStarted by remember { mutableStateOf(false) }
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    LaunchedEffect(capturedBitmap) {
+        Log.d("BitmapDebug", "capturedBitmap updated: $capturedBitmap")
+    }
 
     val controller = remember {
         LifecycleCameraController(context).apply {
@@ -441,6 +531,29 @@ fun ScaleLessonScreen(
             ) {
                 Text("Note: $note", fontSize = 18.sp)
             }
+
+            if (timerStarted) {
+                LaunchedEffect(Unit) {
+                    secondsLeft = 5
+                    while (secondsLeft > 0) {
+                        delay(1000)
+                        secondsLeft--
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(R.string.capturing_picture_label, secondsLeft),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -460,19 +573,29 @@ fun ScaleLessonScreen(
 
                     Button(
                         onClick = {
-                            takePhoto(
-                                controller = controller, onPhotoTaken = { bitmap ->
-                                    capturedBitmap = bitmap
-                                },
-                                context = context
-                            )
+                            coroutineScope.launch {
+                                timerStarted = true
+
+                                delay(5000L)
+
+                                takePhoto(
+                                    controller = controller, onPhotoTaken = { bitmap ->
+                                        capturedBitmap = bitmap
+                                    },
+                                    context = context
+                                )
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(16.dp)
                     ) {
-                        Text(stringResource(R.string.capture_photo_button))
+                        if (timerStarted) {
+                            Text(stringResource(R.string.capturing_photo_button))
+                        } else {
+                            Text(stringResource(R.string.capture_photo_button))
+                        }
                     }
                 }
             }
@@ -482,11 +605,16 @@ fun ScaleLessonScreen(
 
         PhotoReviewScreen(
             bitmap = capturedBitmap!!,
+            gesture = gesture,
             isNoteCorrect = isNoteCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
+            updateLessonStatOkay = updateLessonStatOkay,
+            updateLessonStatBetter = updateLessonStatBetter,
+            updateLessonStatGreat = updateLessonStatGreat,
+            reviewItems = reviewItems,
             modifier = modifier.fillMaxSize(),
         )
     }
@@ -628,12 +756,21 @@ fun NoteIntervalCameraLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
+    updateLessonStatOkay: () -> Unit,
+    updateLessonStatBetter: () -> Unit,
+    updateLessonStatGreat: () -> Unit,
+    reviewItems: List<GestureRating>,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showSecondButton by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    var currentPhoto by remember { mutableStateOf(1) }
     var showFinalButton by remember { mutableStateOf(false) }
     var finalButtonClicked by remember { mutableStateOf(false) }
+
+    var secondsLeft by remember { mutableStateOf(5) }
+    var timerStarted by remember { mutableStateOf(false) }
 
     var capturedBitmap1 by remember { mutableStateOf<Bitmap?>(null) }
     var capturedBitmap2 by remember { mutableStateOf<Bitmap?>(null) }
@@ -668,6 +805,13 @@ fun NoteIntervalCameraLessonScreen(
         }
     }
 
+    LaunchedEffect(capturedBitmap1) {
+        Log.d("BitmapDebug", "capturedBitmap1 updated: $capturedBitmap1")
+    }
+    LaunchedEffect(capturedBitmap2) {
+        Log.d("BitmapDebug", "capturedBitmap2 updated: $capturedBitmap2")
+    }
+
     if (!finalButtonClicked) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -692,6 +836,31 @@ fun NoteIntervalCameraLessonScreen(
             ) {
                 Text("Note: $note", fontSize = 18.sp)
             }
+
+            if (timerStarted && secondsLeft > 0) {
+                LaunchedEffect(Unit) {
+                    secondsLeft = 5
+                    while (secondsLeft > 0) {
+                        delay(1000)
+                        secondsLeft--
+                    }
+                    timerStarted = false
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(R.string.capturing_picture_label, secondsLeft),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
+
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -700,44 +869,37 @@ fun NoteIntervalCameraLessonScreen(
                     controller = controller, modifier = modifier.fillMaxSize()
                 )
 
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            timerStarted = true
 
-                if (!showSecondButton) {
-                    Button(
-                        onClick = {
+                            delay(5000L)
+
                             takePhoto(
                                 controller = controller, onPhotoTaken = { bitmap ->
-                                    capturedBitmap1 = bitmap
-                                }, context = context
+                                    if (currentPhoto == 1) {
+                                        capturedBitmap1 = bitmap
+                                        captureFirstNote()
+                                        currentPhoto = 2
+                                    } else {
+                                        capturedBitmap2 = bitmap
+                                        captureSecondNote()
+                                        showFinalButton = true
+                                    }
+                                },
+                                context = context
                             )
-                            captureFirstNote()
-                            showSecondButton = true
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.BottomCenter)
-                    ) {
-                        Text(stringResource(R.string.capture_first_note_button))
-                    }
-
-                } else {
-                    Button(
-                        onClick = {
-                            takePhoto(
-                                controller = controller, onPhotoTaken = { bitmap ->
-                                    capturedBitmap2 = bitmap
-                                }, context = context
-                            )
-                            captureSecondNote()
-                            showFinalButton = true
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.BottomCenter)
-                    ) {
-                        Text(stringResource(R.string.capture_second_note_button))
-                    }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    if (currentPhoto == 1) Text(stringResource(R.string.capture_first_note_button)) else Text(
+                        stringResource(R.string.capture_second_note_button)
+                    )
                 }
 
                 if (showFinalButton) {
@@ -763,12 +925,61 @@ fun NoteIntervalCameraLessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
+            updateLessonStatOkay = updateLessonStatOkay,
+            updateLessonStatBetter = updateLessonStatBetter,
+            updateLessonStatGreat = updateLessonStatGreat,
+            reviewItems = reviewItems,
             modifier = Modifier
                 .fillMaxSize()
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReviewDropdownMenu(
+    reviewItems: List<GestureRating>,
+    selectedItem: GestureRating,
+    onItemSelected: (GestureRating) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        TextField(
+            value = selectedItem.ratingName,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.rate_label)) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier.menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(
+                    colorResource(R.color.background_colour),
+                    shape = RoundedCornerShape(24.dp)
+                )
+        ) {
+            reviewItems.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(item.ratingName) },
+                    onClick = {
+                        onItemSelected(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun IntervalReviewScreen(
@@ -778,8 +989,14 @@ fun IntervalReviewScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
+    updateLessonStatOkay: () -> Unit = {},
+    updateLessonStatBetter: () -> Unit = {},
+    updateLessonStatGreat: () -> Unit = {},
+    reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
+    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
+
     val pagerState = rememberPagerState(
         pageCount = { capturedBitmaps?.size!! }
     )
@@ -830,7 +1047,6 @@ fun IntervalReviewScreen(
             ) {
                 HorizontalPager(
                     state = pagerState,
-                    key = { capturedBitmaps[it]!! }
                 ) { index ->
                     Image(
                         bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
@@ -840,22 +1056,52 @@ fun IntervalReviewScreen(
                     )
                 }
 
-                Button(
-                    onClick = {
-                        if (isIntervalCorrect) {
-                            updateLessonStatIntervalCorrect()
-                        } else {
-                            updateLessonStatIntervalIncorrect()
-                        }
-                        updateLessonsComplete()
-                        onNextClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(stringResource(R.string.next_button))
+                    ReviewDropdownMenu(
+                        reviewItems = reviewItems,
+                        selectedItem = selectedItem,
+                        onItemSelected = { item ->
+                            selectedItem = item
+                        }
+                    )
+
+                    Button(
+                        onClick = {
+                            when (selectedItem.id) {
+                                1 -> {
+                                    updateLessonStatBetter()
+                                    onNextClick()
+                                }
+
+                                2 -> {
+                                    updateLessonStatOkay()
+                                    onNextClick()
+                                }
+
+                                3 -> {
+                                    updateLessonStatGreat()
+                                    onNextClick()
+                                }
+                            }
+                            if (isIntervalCorrect) {
+                                updateLessonStatIntervalCorrect()
+                            } else {
+                                updateLessonStatIntervalIncorrect()
+                            }
+                            updateLessonsComplete()
+                            onNextClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.next_button))
+                    }
                 }
             }
         }

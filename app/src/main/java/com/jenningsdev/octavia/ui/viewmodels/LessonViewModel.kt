@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jenningsdev.octavia.data.audio.AudioEngine
 import com.jenningsdev.octavia.data.audio.PitchConverterHelper.hzToMidi
 import com.jenningsdev.octavia.data.model.models.Gesture
+import com.jenningsdev.octavia.data.model.models.GestureRating
 import com.jenningsdev.octavia.data.model.models.NoteInterval
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
@@ -39,6 +40,9 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _secondNote = MutableStateFlow(0)
     val secondNote: StateFlow<Int> = _secondNote
+
+    private val _reviewItems = listOf(GestureRating.couldBeBetter, GestureRating.itWasOkay, GestureRating.itWasGreat)
+    val reviewItems = _reviewItems
 
     fun startAudio() {
         viewModelScope.launch {
@@ -114,7 +118,25 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         return actualInterval == expectedInterval.semitones
     }
 
+    fun updateLessonStatOkay() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatOkay()
+        }
+    }
+
+    fun updateLessonStatBetter() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatBetter()
+        }
+    }
+
+    fun updateLessonStatGreat() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatGreat()
+        }
+    }
+
     fun onNextClick() {
-        _navigationEvent.value = NavRoutes.gestureReview.route
+        _navigationEvent.value = NavRoutes.lessonList.route
     }
 }

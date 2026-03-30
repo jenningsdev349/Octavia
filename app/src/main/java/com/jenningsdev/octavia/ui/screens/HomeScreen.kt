@@ -94,12 +94,6 @@ fun HomeScreen(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        HorizontalDivider(
-            color = Color.LightGray,
-            thickness = 1.dp
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -109,49 +103,17 @@ fun HomeScreen(
             image = painterResource(id = R.drawable.fire),
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalDivider(
+            color = Color.LightGray,
+            thickness = 1.dp
+        )
+
         Column(
             modifier = modifier
                 .fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = colorResource(R.color.background_colour)
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(24.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painterResource(R.drawable.education),
-                            contentDescription = "Lesson Image",
-                            modifier = Modifier
-                                .size(100.dp)
-                        )
-                        Text(
-                            text = "$lessonsComplete",
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = stringResource(R.string.lessons_complete_label),
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
 
             HorizontalDivider(
                 color = Color.LightGray,
@@ -182,6 +144,48 @@ fun HomeScreen(
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold
                     )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorResource(R.color.background_colour)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painterResource(R.drawable.education),
+                                contentDescription = "Lesson Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                            )
+                            Text(
+                                text = "$lessonsComplete",
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(R.string.lessons_complete_label),
+                                color = Color.Gray
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
