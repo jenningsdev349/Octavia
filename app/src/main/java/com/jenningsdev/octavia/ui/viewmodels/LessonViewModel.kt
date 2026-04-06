@@ -44,6 +44,9 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
     private val _reviewItems = listOf(GestureRating.couldBeBetter, GestureRating.itWasOkay, GestureRating.itWasGreat)
     val reviewItems = _reviewItems
 
+    private val _randomIntervals = MutableStateFlow(listOf(createRandomInterval(), createRandomInterval()))
+    val randomIntervals: StateFlow<List<NoteInterval>> = _randomIntervals
+
     fun startAudio() {
         viewModelScope.launch {
             audioEngine.startAudio { hz, note ->
@@ -138,5 +141,15 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onNextClick() {
         _navigationEvent.value = NavRoutes.lessonList.route
+    }
+
+    private fun createRandomInterval(): NoteInterval {
+        val newNoteInterval = MutableStateFlow(NoteInterval.random())
+
+        while(newNoteInterval.value == noteInterval.value) {
+            newNoteInterval.value = NoteInterval.random()
+        }
+
+        return newNoteInterval.value
     }
 }

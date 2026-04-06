@@ -218,6 +218,7 @@ class MainActivity : ComponentActivity() {
                                 val note by viewModel.note.collectAsStateWithLifecycle()
                                 val gesture = viewModel.gesture.collectAsState()
                                 val noteInterval = viewModel.noteInterval.collectAsState()
+                                val randomIntervals = viewModel.randomIntervals.collectAsState()
                                 val reviewItems = viewModel.reviewItems
 
                                 LessonScreen(
@@ -227,6 +228,7 @@ class MainActivity : ComponentActivity() {
                                     gesture = gesture,
                                     note = note,
                                     noteInterval = noteInterval,
+                                    randomIntervals = randomIntervals,
                                     startAudio = { viewModel.startAudio() },
                                     isMajorNoteCorrect = viewModel.isMajorNoteCorrect(),
                                     isMinorNoteCorrect = viewModel.isMinorNoteCorrect(),

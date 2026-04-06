@@ -48,4 +48,8 @@
     <string name="interval_lesson_stats_label">Interval Lesson Stats</string>
     <string name="capturing_photo_button">Capturing Photo...</string>
     <string name="capturing_picture_label">Capturing picture in %1$s</string>
+    <string name="ear_training_instructions_text">You will be presented with 2 notes played in quick succession. You need to guess the relationship these 2 notes have to one another (their note interval). If applicable, you also must perform 2 gestures that demonstrate this note interval using the Kodaly method. Listen closely and guess the correct interval!</string>
+    <string name="what_interval_played_label">What interval was just played?</string>
+    <string name="guess_interval_label">Guess Correct Interval!</string>
+    <string name="play_sound_button">Play Sound Again</string>
 </resources>

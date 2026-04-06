@@ -17,17 +17,21 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +41,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -56,7 +62,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,6 +91,7 @@ fun LessonScreen(
     gesture: State<Gesture>,
     note: String?,
     noteInterval: State<NoteInterval>,
+    randomIntervals: State<List<NoteInterval>>,
     startAudio: () -> Unit,
     stopAudio: () -> Unit,
     isMajorNoteCorrect: Boolean,
@@ -179,6 +188,21 @@ fun LessonScreen(
             modifier = modifier
         )
 
+        5 -> EarTrainingLessonScreen(
+            noteInterval = noteInterval,
+            randomIntervals = randomIntervals,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            modifier = modifier
+        )
+
+        6 -> EarTrainingCameraLessonScreen(
+            noteInterval = noteInterval,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            modifier = modifier
+        )
+
         null -> InstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = { selectedScreen = it },
@@ -223,6 +247,18 @@ fun InstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = onSelectScreen,
             noteInterval = noteInterval,
+            modifier = modifier
+        )
+
+        5 -> EarTrainingInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            modifier = modifier
+        )
+
+        6 -> EarTrainingInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
             modifier = modifier
         )
     }
@@ -291,6 +327,7 @@ fun IntervalInstructionsScreen(
     ) {
         Text(
             "Play the following Note Interval: ${noteInterval.value.intervalName}",
+            textAlign = TextAlign.Center,
             fontSize = 18.sp
         )
 
@@ -298,6 +335,55 @@ fun IntervalInstructionsScreen(
 
         Text(
             stringResource(R.string.note_interval_instructions_placeholder_text),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = {
+                onSelectScreen(lessonId)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.lesson_instructions_button))
+        }
+    }
+}
+
+@Composable
+fun EarTrainingInstructionsScreen(
+    lessonId: Int,
+    onSelectScreen: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            "Ear Training Lesson",
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp
+        )
+
+        Spacer(modifier = Modifier.height(144.dp))
+
+        Image(
+            painter = painterResource(R.drawable.hearing),
+            contentDescription = "Ear Training Image",
+            modifier = Modifier.size(200.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            stringResource(R.string.ear_training_instructions_text),
             textAlign = TextAlign.Center
         )
 
@@ -364,10 +450,22 @@ fun PhotoReviewScreen(
                 .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
+            if (isNoteCorrect) Text(
+                stringResource(R.string.correct_note_label),
+                fontSize = 24.sp
+            ) else Text(
                 stringResource(R.string.incorrect_note_label),
                 fontSize = 24.sp
             )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Swipe right to compare!", fontSize = 24.sp)
         }
 
         Box(
@@ -523,15 +621,6 @@ fun ScaleLessonScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(36.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Note: $note", fontSize = 18.sp)
-            }
-
             if (timerStarted) {
                 LaunchedEffect(Unit) {
                     secondsLeft = 5
@@ -674,6 +763,7 @@ fun NoteIntervalLessonScreen(
             ) {
                 Text(
                     "Play this note interval: ${noteInterval.value.intervalName}",
+                    textAlign = TextAlign.Center,
                     fontSize = 18.sp
                 )
             }
@@ -935,6 +1025,256 @@ fun NoteIntervalCameraLessonScreen(
     }
 }
 
+@Composable
+fun EarTrainingLessonScreen(
+    noteInterval: State<NoteInterval>,
+    randomIntervals: State<List<NoteInterval>>,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val intervals = remember(noteInterval.value, randomIntervals.value) {
+        (randomIntervals.value + noteInterval.value).shuffled()
+    }
+
+    var buttonClicked by remember { mutableStateOf(false) }
+    var isCorrect by remember { mutableStateOf(false) }
+
+    if (!buttonClicked) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Image(
+                painter = painterResource(R.drawable.piano),
+                contentDescription = "Octavia",
+                modifier = Modifier.size(100.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.app_name),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            HorizontalDivider(
+                color = Color.LightGray,
+                thickness = 1.dp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Image(
+                painter = painterResource(R.drawable.music_notes),
+                contentDescription = "Ear Training Lesson Image",
+                modifier = Modifier.size(100.dp)
+            )
+
+            Text(
+                stringResource(R.string.guess_interval_label),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Text(
+                stringResource(R.string.what_interval_played_label),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            intervals.forEach { interval ->
+                OutlinedButton(
+                    onClick = {
+                        if (interval == noteInterval.value) {
+                            Log.d("noteInterval", "Success!")
+                            isCorrect = true
+                            buttonClicked = true
+                        } else {
+                            Log.d("noteInterval", "Fail!")
+                            buttonClicked = true
+                        }
+                    },
+                    border = BorderStroke(2.dp, colorResource(R.color.colour3)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(R.color.colour3)
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(interval.intervalName)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Button(
+                onClick = {
+
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.play_sound_button))
+            }
+        }
+    } else {
+        EarTrainingReviewScreen(
+            isIntervalCorrect = isCorrect,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun EarTrainingCameraLessonScreen(
+    noteInterval: State<NoteInterval>,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    var currentPhoto by remember { mutableStateOf(1) }
+    var showFinalButton by remember { mutableStateOf(false) }
+    var finalButtonClicked by remember { mutableStateOf(false) }
+
+    var secondsLeft by remember { mutableStateOf(5) }
+    var timerStarted by remember { mutableStateOf(false) }
+
+    var capturedBitmap1 by remember { mutableStateOf<Bitmap?>(null) }
+    var capturedBitmap2 by remember { mutableStateOf<Bitmap?>(null) }
+    val bitmaps = listOf(capturedBitmap1, capturedBitmap2)
+
+    val context = LocalContext.current
+
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(CameraController.IMAGE_CAPTURE)
+            cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+    }
+
+    LaunchedEffect(capturedBitmap1) {
+        Log.d("BitmapDebug", "capturedBitmap1 updated: $capturedBitmap1")
+    }
+    LaunchedEffect(capturedBitmap2) {
+        Log.d("BitmapDebug", "capturedBitmap2 updated: $capturedBitmap2")
+    }
+
+    if (!finalButtonClicked) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "What interval was just played?",
+                    fontSize = 18.sp
+                )
+            }
+
+            if (timerStarted && secondsLeft > 0) {
+                LaunchedEffect(Unit) {
+                    secondsLeft = 5
+                    while (secondsLeft > 0) {
+                        delay(1000)
+                        secondsLeft--
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(R.string.capturing_picture_label, secondsLeft),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
+
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+
+                CameraPreview(
+                    controller = controller, modifier = modifier.fillMaxSize()
+                )
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            timerStarted = true
+
+                            delay(5000L)
+
+                            takePhoto(
+                                controller = controller, onPhotoTaken = { bitmap ->
+                                    if (currentPhoto == 1) {
+                                        capturedBitmap1 = bitmap
+                                        currentPhoto = 2
+                                    } else {
+                                        capturedBitmap2 = bitmap
+                                        showFinalButton = true
+                                    }
+                                },
+                                context = context
+                            )
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    if (currentPhoto == 1) Text(stringResource(R.string.capture_first_note_button)) else Text(
+                        stringResource(R.string.capture_second_note_button)
+                    )
+                }
+
+                if (showFinalButton) {
+                    Button(
+                        onClick = {
+                            finalButtonClicked = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(stringResource(R.string.proceed_to_next_screen_button))
+                    }
+                }
+            }
+        }
+    } else {
+
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewDropdownMenu(
@@ -1092,6 +1432,166 @@ fun IntervalReviewScreen(
                                 updateLessonStatIntervalCorrect()
                             } else {
                                 updateLessonStatIntervalIncorrect()
+                            }
+                            updateLessonsComplete()
+                            onNextClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.next_button))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EarTrainingReviewScreen(
+    isIntervalCorrect: Boolean? = null,
+    capturedBitmaps: List<Bitmap?>? = null,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatOkay: () -> Unit = {},
+    updateLessonStatBetter: () -> Unit = {},
+    updateLessonStatGreat: () -> Unit = {},
+    reviewItems: List<GestureRating> = listOf(),
+    modifier: Modifier = Modifier
+) {
+    var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
+
+    val pagerState = rememberPagerState(
+        pageCount = {
+            if (capturedBitmaps?.isNotEmpty() == true) {
+                capturedBitmaps.size
+            } else {
+                0
+            }
+        }
+    )
+
+    if (capturedBitmaps.isNullOrEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.hearing),
+                    contentDescription = "Analytics",
+                    modifier = Modifier.size(75.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    "Ear Training Lesson",
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(144.dp))
+
+            Image(
+                painter = if (isIntervalCorrect == true) painterResource(R.drawable.check) else painterResource(
+                    R.drawable.incorrect
+                ),
+                contentDescription = "Correct or incorrect",
+                modifier = Modifier.size(200.dp)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = if (isIntervalCorrect == true) "Correct!" else "Incorrect, try again!",
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = onNextClick,
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.next_button))
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isIntervalCorrect == true) Text(stringResource(R.string.note_interval_correct)) else Text(
+                    stringResource(R.string.note_interval_incorrect)
+                )
+            }
+
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                ) { index ->
+                    Image(
+                        bitmap = capturedBitmaps?.get(index)?.asImageBitmap()!!,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    selectedItem?.let {
+                        ReviewDropdownMenu(
+                            reviewItems = reviewItems,
+                            selectedItem = it,
+                            onItemSelected = { item ->
+                                selectedItem = item
+                            }
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            when (selectedItem?.id) {
+                                1 -> {
+                                    updateLessonStatBetter()
+                                    onNextClick()
+                                }
+
+                                2 -> {
+                                    updateLessonStatOkay()
+                                    onNextClick()
+                                }
+
+                                3 -> {
+                                    updateLessonStatGreat()
+                                    onNextClick()
+                                }
                             }
                             updateLessonsComplete()
                             onNextClick()
