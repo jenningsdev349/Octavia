@@ -13,16 +13,12 @@ class AnalyticsScreenViewModel(application: Application) : AndroidViewModel(appl
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
 
-    suspend fun getLessonStatBetter(): Int {
-        return userRepository.getLessonStatBetter()
+    suspend fun getLessonStatGestureCorrect(): Int {
+        return userRepository.getLessonStatGestureCorrect()
     }
 
-    suspend fun getLessonStatOkay(): Int {
-        return userRepository.getLessonStatOkay()
-    }
-
-    suspend fun getLessonStatGreat(): Int {
-        return userRepository.getLessonStatGreat()
+    suspend fun getLessonStatGestureIncorrect(): Int {
+        return userRepository.getLessonStatGestureIncorrect()
     }
 
     suspend fun getLessonStatNoteCorrect(): Int {

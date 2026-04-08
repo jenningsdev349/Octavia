@@ -38,16 +38,15 @@ import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 
 @Composable
 fun AnalyticsScreen(
-    lessonStatBetter: Int,
-    lessonStatOkay: Int,
-    lessonStatGreat: Int,
+    lessonStatGestureCorrect: Int,
+    lessonStatGestureIncorrect: Int,
     lessonStatNoteCorrect: Int,
     lessonStatNoteIncorrect: Int,
     lessonStatIntervalCorrect: Int,
     lessonStatIntervalIncorrect: Int,
     modifier: Modifier = Modifier
 ) {
-    val gestureLessonData = listOf(lessonStatBetter, lessonStatOkay, lessonStatGreat)
+    val gestureLessonData = listOf(lessonStatGestureCorrect, lessonStatGestureIncorrect)
     val noteLessonData = listOf(lessonStatNoteCorrect, lessonStatNoteIncorrect)
     val intervalLessonData = listOf(lessonStatIntervalCorrect, lessonStatIntervalIncorrect)
 
@@ -87,7 +86,7 @@ fun AnalyticsScreen(
 
         BarChart(
             data = gestureLessonData,
-            labels = listOf("Meh", "Okay", "Great!")
+            labels = listOf("Correct", "Incorrect")
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -101,7 +100,6 @@ fun AnalyticsScreen(
         BarChart(
             data = noteLessonData,
             labels = listOf("Correct", "Incorrect")
-
         )
 
         Spacer(modifier = Modifier.width(16.dp))

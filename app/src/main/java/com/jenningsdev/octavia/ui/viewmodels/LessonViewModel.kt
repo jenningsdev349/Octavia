@@ -41,7 +41,7 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
     private val _secondNote = MutableStateFlow(0)
     val secondNote: StateFlow<Int> = _secondNote
 
-    private val _reviewItems = listOf(GestureRating.couldBeBetter, GestureRating.itWasOkay, GestureRating.itWasGreat)
+    private val _reviewItems = listOf(GestureRating.correct, GestureRating.incorrect)
     val reviewItems = _reviewItems
 
     fun startAudio() {
@@ -118,21 +118,15 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         return actualInterval == expectedInterval.semitones
     }
 
-    fun updateLessonStatOkay() {
+    fun updateLessonStatGestureIncorrect() {
         viewModelScope.launch {
-            userRepository.updateLessonStatOkay()
+            userRepository.updateLessonStatGestureIncorrect()
         }
     }
 
-    fun updateLessonStatBetter() {
+    fun updateLessonStatGestureCorrect() {
         viewModelScope.launch {
-            userRepository.updateLessonStatBetter()
-        }
-    }
-
-    fun updateLessonStatGreat() {
-        viewModelScope.launch {
-            userRepository.updateLessonStatGreat()
+            userRepository.updateLessonStatGestureCorrect()
         }
     }
 

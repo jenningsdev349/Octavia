@@ -94,9 +94,8 @@ fun LessonScreen(
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
@@ -122,9 +121,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
@@ -139,9 +137,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
@@ -171,9 +168,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             startAudio = startAudio,
             modifier = modifier
@@ -343,9 +339,8 @@ fun PhotoReviewScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
@@ -410,17 +405,12 @@ fun PhotoReviewScreen(
                     onClick = {
                         when (selectedItem.id) {
                             1 -> {
-                                updateLessonStatBetter()
+                                updateLessonStatGestureCorrect()
                                 onNextClick()
                             }
 
                             2 -> {
-                                updateLessonStatOkay()
-                                onNextClick()
-                            }
-
-                            3 -> {
-                                updateLessonStatGreat()
+                                updateLessonStatGestureIncorrect()
                                 onNextClick()
                             }
                         }
@@ -453,9 +443,8 @@ fun ScaleLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
@@ -611,9 +600,8 @@ fun ScaleLessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             modifier = modifier.fillMaxSize(),
         )
@@ -756,9 +744,8 @@ fun NoteIntervalCameraLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
@@ -933,9 +920,8 @@ fun NoteIntervalCameraLessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             modifier = Modifier
                 .fillMaxSize()
@@ -997,9 +983,8 @@ fun IntervalReviewScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit = {},
-    updateLessonStatBetter: () -> Unit = {},
-    updateLessonStatGreat: () -> Unit = {},
+    updateLessonStatGestureCorrect: () -> Unit = {},
+    updateLessonStatGestureIncorrect: () -> Unit = {},
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
@@ -1082,17 +1067,12 @@ fun IntervalReviewScreen(
                         onClick = {
                             when (selectedItem.id) {
                                 1 -> {
-                                    updateLessonStatBetter()
+                                    updateLessonStatGestureCorrect()
                                     onNextClick()
                                 }
 
                                 2 -> {
-                                    updateLessonStatOkay()
-                                    onNextClick()
-                                }
-
-                                3 -> {
-                                    updateLessonStatGreat()
+                                    updateLessonStatGestureIncorrect()
                                     onNextClick()
                                 }
                             }

@@ -166,18 +166,16 @@ class MainActivity : ComponentActivity() {
                             composable(NavRoutes.analytics.route) {
                                 val viewModel = viewModel<AnalyticsScreenViewModel>()
 
-                                var lessonStatBetter by remember { mutableStateOf(0) }
-                                var lessonStatOkay by remember { mutableStateOf(0) }
-                                var lessonStatGreat by remember { mutableStateOf(0) }
+                                var lessonStatGestureCorrect by remember { mutableStateOf(0) }
+                                var lessonStatGestureIncorrect by remember { mutableStateOf(0) }
                                 var lessonStatNoteCorrect by remember { mutableStateOf(0) }
                                 var lessonStatNoteIncorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalCorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalIncorrect by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
-                                    lessonStatBetter = viewModel.getLessonStatBetter()
-                                    lessonStatOkay = viewModel.getLessonStatOkay()
-                                    lessonStatGreat = viewModel.getLessonStatGreat()
+                                    lessonStatGestureCorrect = viewModel.getLessonStatGestureCorrect()
+                                    lessonStatGestureIncorrect = viewModel.getLessonStatGestureIncorrect()
                                     lessonStatNoteCorrect = viewModel.getLessonStatNoteCorrect()
                                     lessonStatNoteIncorrect = viewModel.getLessonStatNoteIncorrect()
                                     lessonStatIntervalCorrect = viewModel.getLessonStatIntervalCorrect()
@@ -185,9 +183,8 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 AnalyticsScreen(
-                                    lessonStatBetter = lessonStatBetter,
-                                    lessonStatOkay = lessonStatOkay,
-                                    lessonStatGreat = lessonStatGreat,
+                                    lessonStatGestureCorrect = lessonStatGestureCorrect,
+                                    lessonStatGestureIncorrect = lessonStatGestureIncorrect,
                                     lessonStatNoteCorrect = lessonStatNoteCorrect,
                                     lessonStatNoteIncorrect = lessonStatNoteIncorrect,
                                     lessonStatIntervalCorrect = lessonStatIntervalCorrect,
@@ -252,9 +249,8 @@ class MainActivity : ComponentActivity() {
                                     updateLessonStatNoteIncorrect = { viewModel.updateLessonStatNoteIncorrect() },
                                     updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
                                     updateLessonStatIntervalIncorrect = { viewModel.updateLessonStatIntervalIncorrect() },
-                                    updateLessonStatBetter = { viewModel.updateLessonStatBetter() },
-                                    updateLessonStatOkay = { viewModel.updateLessonStatOkay() },
-                                    updateLessonStatGreat = { viewModel.updateLessonStatGreat() },
+                                    updateLessonStatGestureCorrect = { viewModel.updateLessonStatGestureCorrect() },
+                                    updateLessonStatGestureIncorrect = { viewModel.updateLessonStatGestureIncorrect() },
                                     reviewItems = reviewItems,
                                     detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },
