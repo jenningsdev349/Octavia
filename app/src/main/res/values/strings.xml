@@ -56,4 +56,7 @@
     <string name="view_stats_card_title">View Analytics!</string>
     <string name="view_stats_card_subtitle">Click here to view all lesson stats.</string>
     <string name="overall_success_rate_label">overall success rate!</string>
+    <string name="capture_picture_label">Press button to capture picture!</string>
+    <string name="perform_note_interval_label">Perform this note interval: %1$s</string>
+    <string name="note_value_label">Note: %1$s</string>
 </resources>

@@ -816,6 +816,14 @@ fun NoteIntervalCameraLessonScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            LaunchedEffect(timerStarted) {
+                secondsLeft = 5
+                while (secondsLeft > 0) {
+                    delay(1000)
+                    secondsLeft--
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -823,7 +831,10 @@ fun NoteIntervalCameraLessonScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Perform this note interval: ${noteInterval.value.intervalName}",
+                    text = stringResource(
+                        R.string.perform_note_interval_label,
+                        noteInterval.value.intervalName
+                    ),
                     fontSize = 18.sp
                 )
             }
@@ -834,30 +845,25 @@ fun NoteIntervalCameraLessonScreen(
                     .height(36.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Note: $note", fontSize = 18.sp)
+                Text(stringResource(R.string.note_value_label, note ?: ""), fontSize = 18.sp)
             }
 
-            if (timerStarted && secondsLeft > 0) {
-                LaunchedEffect(Unit) {
-                    secondsLeft = 5
-                    while (secondsLeft > 0) {
-                        delay(1000)
-                        secondsLeft--
-                    }
-                    timerStarted = false
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(36.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (timerStarted)
                     Text(
                         stringResource(R.string.capturing_picture_label, secondsLeft),
                         fontSize = 18.sp
                     )
-                }
+                else
+                    Text(
+                        stringResource(R.string.capture_picture_label),
+                        fontSize = 18.sp
+                    )
             }
 
 
@@ -890,6 +896,8 @@ fun NoteIntervalCameraLessonScreen(
                                 },
                                 context = context
                             )
+
+                            timerStarted = false
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
