@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,7 +57,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -238,11 +241,20 @@ fun ScaleInstructionsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            stringResource(R.string.perform_gesture_label, gesture.value.gestureName),
+            stringResource(R.string.perform_gesture_label),
             fontSize = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = gesture.value.gestureName,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         VideoPlayer(
             modifier = Modifier
@@ -279,6 +291,10 @@ fun IntervalInstructionsScreen(
     onSelectScreen: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pagerState = rememberPagerState(
+        pageCount = { 2 }
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -286,14 +302,54 @@ fun IntervalInstructionsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            "Play the following Note Interval: ${noteInterval.value.intervalName}",
+            stringResource(R.string.perform_gesture_label),
             fontSize = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(156.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            stringResource(R.string.note_interval_instructions_placeholder_text),
+            text = noteInterval.value.intervalName,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.note_interval_video_label),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalPager(
+            state = pagerState,
+        ) { index ->
+            when (index) {
+                0 -> VideoPlayer(
+                    modifier = Modifier
+                        .height(500.dp)
+                        .fillMaxWidth(),
+                    videoId = noteInterval.value.videoGesture1
+                )
+
+                1 -> VideoPlayer(
+                    modifier = Modifier
+                        .height(500.dp)
+                        .fillMaxWidth(),
+                    videoId = noteInterval.value.videoGesture2
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            "Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.",
             textAlign = TextAlign.Center
         )
 
@@ -722,6 +778,7 @@ fun NoteIntervalLessonScreen(
         }
     } else {
         IntervalReviewScreen(
+            noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
@@ -818,10 +875,7 @@ fun NoteIntervalCameraLessonScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(
-                        R.string.perform_note_interval_label,
-                        noteInterval.value.intervalName
-                    ),
+                    text = "Perform this note interval: ${noteInterval.value.intervalName}",
                     fontSize = 18.sp
                 )
             }
@@ -914,6 +968,7 @@ fun NoteIntervalCameraLessonScreen(
         }
     } else {
         IntervalReviewScreen(
+            noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
@@ -977,6 +1032,7 @@ fun ReviewDropdownMenu(
 
 @Composable
 fun IntervalReviewScreen(
+    noteInterval: State<NoteInterval>,
     isIntervalCorrect: Boolean,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
@@ -988,33 +1044,47 @@ fun IntervalReviewScreen(
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
-    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
+    var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
 
     val pagerState = rememberPagerState(
-        pageCount = { capturedBitmaps?.size!! }
+        pageCount = { 4 }
     )
 
-    if (capturedBitmaps?.isEmpty()!!) {
-        Box(
+    if (capturedBitmaps == null) {
+        Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            if (isIntervalCorrect) Text(
-                stringResource(R.string.note_interval_correct), modifier = Modifier.align(
-                    Alignment.Center
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isIntervalCorrect) Text(
+                    stringResource(R.string.note_interval_correct),
+                    fontSize = 18.sp
+                ) else Text(
+                    stringResource(R.string.note_interval_incorrect),
+                    fontSize = 18.sp
                 )
-            ) else Text(
-                stringResource(R.string.note_interval_incorrect), modifier = Modifier.align(
-                    Alignment.Center
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Image(
+                    painter = painterResource(R.drawable.musical_note),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(120.dp)
                 )
-            )
+            }
 
             Button(
                 onClick = onNextClick,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
                 Text(stringResource(R.string.proceed_to_next_screen_button))
@@ -1041,12 +1111,39 @@ fun IntervalReviewScreen(
                 HorizontalPager(
                     state = pagerState,
                 ) { index ->
-                    Image(
-                        bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    val bitmap = capturedBitmaps.getOrNull(index)?.asImageBitmap()
+
+                    when (index) {
+                        0 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        1 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        2 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture1
+                        )
+
+                        3 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture2
+                        )
+                    }
                 }
 
                 Column(
@@ -1055,17 +1152,19 @@ fun IntervalReviewScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ReviewDropdownMenu(
-                        reviewItems = reviewItems,
-                        selectedItem = selectedItem,
-                        onItemSelected = { item ->
-                            selectedItem = item
-                        }
-                    )
+                    selectedItem?.let {
+                        ReviewDropdownMenu(
+                            reviewItems = reviewItems,
+                            selectedItem = it,
+                            onItemSelected = { item ->
+                                selectedItem = item
+                            }
+                        )
+                    }
 
                     Button(
                         onClick = {
-                            when (selectedItem.id) {
+                            when (selectedItem?.id) {
                                 1 -> {
                                     updateLessonStatGestureCorrect()
                                     onNextClick()
