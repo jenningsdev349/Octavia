@@ -37,16 +37,6 @@ class LessonListViewModel : ViewModel() {
                 lessonId = 6,
                 title = "Kodály Method Lesson 6: Ear Training + Gestures",
                 description = "Listen along to note being played, select correct note and perform correct gesture."
-            ),
-            Lesson(
-                lessonId = 7,
-                title = "Takadimi Method Lesson 1: Basic Rhythm",
-                description = "Clap along to a 4/4 beat"
-            ),
-            Lesson(
-                lessonId = 8,
-                title = "Takadimi Method Lesson 2: Ta-Ka-Di-Mi",
-                description = "Perform correct syllable corresponding to beat."
             )
         )
     )

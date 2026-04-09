@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -33,7 +32,6 @@ import com.jenningsdev.octavia.ui.navigation.NavRoutes
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    onAnalyticsClick: () -> Unit,
     onSignOutClick: () -> Unit,
     navController: NavController,
     username: String?,
@@ -45,10 +43,6 @@ fun ProfileScreen(
                 navController.navigate(NavRoutes.splashScreen.route) {
                     popUpTo(0) { inclusive = true }
                 }
-            }
-
-            "analytics" -> {
-                navController.navigate("analytics")
             }
         }
     }
@@ -89,14 +83,6 @@ fun ProfileScreen(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(
-                    onClick = { onAnalyticsClick() },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour2)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.view_analytics_button))
-                }
-
                 OutlinedButton(
                     onSignOutClick,
                     border = BorderStroke(2.dp, colorResource(R.color.colour3)),

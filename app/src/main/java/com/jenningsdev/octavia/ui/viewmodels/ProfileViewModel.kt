@@ -35,10 +35,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun onAnalyticsClick() {
-        _navigationEvent.value = NavRoutes.analytics.route
-    }
-
     fun onSignOutClick() {
         authRepository.signOut()
         userRepository.setLoggedIn(false)

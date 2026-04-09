@@ -21,7 +21,7 @@
     <string name="sign_out_button">Sign Out</string>
     <string name="name_label">"Name: "</string>
     <string name="view_analytics_button">View Analytics</string>
-    <string name="perform_gesture_label">"Perform the following gesture: %1$s"</string>
+    <string name="perform_gesture_label">"Perform the following gesture:"</string>
     <string name="capture_photo_button">Capture Photo</string>
     <string name="photo_taken_label">Photo Taken</string>
     <string name="next_button">Next</string>
@@ -42,8 +42,22 @@
     <string name="proceed_to_next_screen_button">Proceed to next screen</string>
     <string name="note_interval_correct">Note interval was correct!</string>
     <string name="note_interval_incorrect">Note interval was false, try again!</string>
-    <string name="lessons_complete_label">lessons complete!</string>
+    <string name="lessons_complete_label">lessons practiced!</string>
     <string name="gesture_lesson_stats_label">Gesture Lesson Stats</string>
     <string name="note_lesson_stats_label">Note Lesson Stats</string>
     <string name="interval_lesson_stats_label">Interval Lesson Stats</string>
+    <string name="capturing_photo_button">Capturing Photo...</string>
+    <string name="capturing_picture_label">Capturing picture in %1$s</string>
+    <string name="octavia_content_description">Octavia Logo</string>
+    <string name="streaks_title_placeholder">You currently have 7 days logged in a row!</string>
+    <string name="streaks_subtitle_placeholder">Complete a lesson daily to continue your streak.</string>
+    <string name="next_lesson_card_title">Continue to next lesson!</string>
+    <string name="next_lesson_card_subtitle">Click here to start next lesson.</string>
+    <string name="view_stats_card_title">View Analytics!</string>
+    <string name="view_stats_card_subtitle">Click here to view all lesson stats.</string>
+    <string name="overall_success_rate_label">overall success rate!</string>
+    <string name="capture_picture_label">Press button to capture picture!</string>
+    <string name="perform_note_interval_label">Perform this note interval:</string>
+    <string name="note_value_label">Note: %1$s</string>
+    <string name="note_interval_video_label">Swipe right to see example videos!</string>
 </resources>

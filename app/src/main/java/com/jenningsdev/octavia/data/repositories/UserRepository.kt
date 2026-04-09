@@ -49,22 +49,22 @@ class UserRepository(
         }
     }
 
-    suspend fun getLessonStatOkay(): Int {
+    suspend fun getLessonStatGestureCorrect(): Int {
         val lessonStatOkay: Int? = database
             .child("users")
             .child(uid)
-            .child("lessonStatOkay")
+            .child("lessonStatGestureCorrect")
             .get()
             .await()
             .getValue(Int::class.java)
         return lessonStatOkay ?: 0
     }
 
-    suspend fun updateLessonStatOkay() {
+    suspend fun updateLessonStatGestureCorrect() {
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
-            .child("lessonStatOkay")
+            .child("lessonStatGestureCorrect")
             .get()
             .await()
             .getValue(Int::class.java)
@@ -73,56 +73,27 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
-                .child("lessonStatOkay")
+                .child("lessonStatGestureCorrect")
                 .setValue(lessonStat + 1)
         }
     }
 
-    suspend fun getLessonStatBetter(): Int {
-        val lessonStatBetter: Int? = database
-            .child("users")
-            .child(uid)
-            .child("lessonStatBetter")
-            .get()
-            .await()
-            .getValue(Int::class.java)
-        return lessonStatBetter ?: 0
-    }
-
-    suspend fun updateLessonStatBetter() {
-        val lessonStat: Int? = database
-            .child("users")
-            .child(uid)
-            .child("lessonStatBetter")
-            .get()
-            .await()
-            .getValue(Int::class.java)
-
-        if (lessonStat != null) {
-            database
-                .child("users")
-                .child(uid)
-                .child("lessonStatBetter")
-                .setValue(lessonStat + 1)
-        }
-    }
-
-    suspend fun getLessonStatGreat(): Int {
+    suspend fun getLessonStatGestureIncorrect(): Int {
         val lessonStatGreat: Int? = database
             .child("users")
             .child(uid)
-            .child("lessonStatGreat")
+            .child("lessonStatGestureIncorrect")
             .get()
             .await()
             .getValue(Int::class.java)
         return lessonStatGreat ?: 0
     }
 
-    suspend fun updateLessonStatGreat() {
+    suspend fun updateLessonStatGestureIncorrect() {
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
-            .child("lessonStatGreat")
+            .child("lessonStatGestureIncorrect")
             .get()
             .await()
             .getValue(Int::class.java)
@@ -131,7 +102,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
-                .child("lessonStatGreat")
+                .child("lessonStatGestureIncorrect")
                 .setValue(lessonStat + 1)
         }
     }

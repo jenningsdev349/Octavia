@@ -1,6 +1,7 @@
 package com.jenningsdev.octavia.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,35 +33,27 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.jenningsdev.octavia.R
-import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
+    navigationEvent: String?,
     lessonsComplete: Int,
-    lessonStatBetter: Int,
-    lessonStatOkay: Int,
-    lessonStatGreat: Int,
-    lessonStatNoteCorrect: Int,
-    lessonStatNoteIncorrect: Int,
-    lessonStatIntervalCorrect: Int,
-    lessonStatIntervalIncorrect: Int,
+    onAnalyticsClick : () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val gestureLessonData = listOf(lessonStatBetter, lessonStatOkay, lessonStatGreat)
-    val noteLessonData = listOf(lessonStatNoteCorrect, lessonStatNoteIncorrect)
-    val intervalLessonData = listOf(lessonStatIntervalCorrect, lessonStatIntervalIncorrect)
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            "analytics" -> {
+                navController.navigate("analytics")
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -75,83 +67,67 @@ fun HomeScreen(
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.piano),
-                    contentDescription = "Octavia",
-                    modifier = Modifier.size(100.dp)
+                    contentDescription = stringResource(R.string.octavia_content_description),
+                    modifier = Modifier.size(75.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
                     text = stringResource(R.string.app_name),
-                    fontSize = 24.sp,
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    letterSpacing = 1.5.sp
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        GenericCard(
+            title = stringResource(R.string.streaks_title_placeholder),
+            subtitle = stringResource(R.string.streaks_subtitle_placeholder),
+            image = painterResource(id = R.drawable.fire),
+            colour = colorResource(R.color.colour6),
+            onClick = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(128.dp),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        GenericCard(
+            title = stringResource(R.string.next_lesson_card_title),
+            subtitle = stringResource(R.string.next_lesson_card_subtitle),
+            image = painterResource(id = R.drawable.book),
+            colour = colorResource(R.color.colour8),
+            onClick = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(88.dp),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         HorizontalDivider(
             color = Color.LightGray,
             thickness = 1.dp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        StreaksCard(
-            title = "You currently have 7 days logged in a row!",
-            subtitle = "Complete a lesson daily to continue your streak.",
-            image = painterResource(id = R.drawable.fire),
-        )
-
         Column(
             modifier = modifier
                 .fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = colorResource(R.color.background_colour)
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(24.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painterResource(R.drawable.education),
-                            contentDescription = "Lesson Image",
-                            modifier = Modifier
-                                .size(100.dp)
-                        )
-                        Text(
-                            text = "$lessonsComplete",
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = stringResource(R.string.lessons_complete_label),
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
 
             HorizontalDivider(
                 color = Color.LightGray,
@@ -184,95 +160,128 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    stringResource(R.string.gesture_lesson_stats_label),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                BarChart(
-                    data = gestureLessonData,
-                    labels = listOf("Meh", "Okay", "Great!")
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    stringResource(R.string.note_lesson_stats_label),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                BarChart(
-                    data = noteLessonData,
-                    labels = listOf("Correct", "Incorrect")
-
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    stringResource(R.string.interval_lesson_stats_label),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                BarChart(
-                    data = intervalLessonData,
-                    labels = listOf("Correct", "Incorrect")
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun BarChart(
-    data: List<Int>,
-    labels: List<String>
-) {
-    val modelProducer = remember { CartesianChartModelProducer() }
-
-    LaunchedEffect(data) {
-        modelProducer.runTransaction {
-            columnSeries {
-                series(data)
-            }
-        }
-    }
-
-    CartesianChartHost(
-        chart = rememberCartesianChart(
-            rememberColumnCartesianLayer(),
-            startAxis = VerticalAxis.rememberStart(),
-            bottomAxis = HorizontalAxis.rememberBottom(
-                valueFormatter = { _, x, _ ->
-                    labels.getOrNull(x.toInt()) ?: ""
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    GenericCard(
+                        title = stringResource(R.string.view_stats_card_title),
+                        subtitle = stringResource(R.string.view_stats_card_subtitle),
+                        image = painterResource(id = R.drawable.graph),
+                        colour = colorResource(R.color.colour7),
+                        onClick = onAnalyticsClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(88.dp),
+                    )
                 }
-            ),
-        ),
-        modelProducer = modelProducer,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp)
-    )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorResource(R.color.background_colour)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painterResource(R.drawable.education),
+                                contentDescription = "Lesson Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                            )
+                            Text(
+                                text = "$lessonsComplete",
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(R.string.lessons_complete_label),
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorResource(R.color.background_colour)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painterResource(R.drawable.musical_note),
+                                contentDescription = "Success Rate Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                            )
+                            Text(
+                                text = "0%",
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(R.string.overall_success_rate_label),
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun StreaksCard(
+fun GenericCard(
     title: String,
-    subtitle: String,
+    subtitle: String?,
     image: Painter,
+    colour: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.colour6)
+            containerColor = colour
         ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(128.dp),
+        modifier = modifier
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -300,11 +309,10 @@ fun StreaksCard(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = subtitle,
+                    text = subtitle ?: "",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
     }
 }
-
