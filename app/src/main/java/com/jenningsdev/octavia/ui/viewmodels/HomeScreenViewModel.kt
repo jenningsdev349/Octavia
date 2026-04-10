@@ -17,31 +17,7 @@ class HomeScreenViewModel(application: Application): AndroidViewModel(applicatio
         return userRepository.getLessonsComplete()
     }
 
-    suspend fun getLessonStatBetter(): Int {
-        return userRepository.getLessonStatBetter()
-    }
-
-    suspend fun getLessonStatOkay(): Int {
-        return userRepository.getLessonStatOkay()
-    }
-
-    suspend fun getLessonStatGreat(): Int {
-        return userRepository.getLessonStatGreat()
-    }
-
-    suspend fun getLessonStatNoteCorrect(): Int {
-        return userRepository.getLessonStatNoteCorrect()
-    }
-
-    suspend fun getLessonStatNoteIncorrect(): Int {
-        return userRepository.getLessonStatNoteIncorrect()
-    }
-
-    suspend fun getLessonStatIntervalCorrect(): Int {
-        return userRepository.getLessonStatIntervalCorrect()
-    }
-
-    suspend fun getLessonStatIntervalIncorrect(): Int {
-        return userRepository.getLessonStatIntervalIncorrect()
+    fun onAnalyticsClick() {
+        _navigationEvent.value = "analytics"
     }
 }

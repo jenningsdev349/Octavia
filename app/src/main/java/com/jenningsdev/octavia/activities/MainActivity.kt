@@ -30,6 +30,7 @@ import androidx.navigation.navArgument
 import com.jenningsdev.octavia.R
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
+import com.jenningsdev.octavia.ui.screens.AnalyticsScreen
 import com.jenningsdev.octavia.ui.screens.BottomNavigationBar
 import com.jenningsdev.octavia.ui.screens.DashboardScreen
 import com.jenningsdev.octavia.ui.screens.HomeScreen
@@ -40,6 +41,7 @@ import com.jenningsdev.octavia.ui.screens.SignInScreen
 import com.jenningsdev.octavia.ui.screens.SignUpScreen
 import com.jenningsdev.octavia.ui.screens.SplashScreen
 import com.jenningsdev.octavia.ui.theme.OctaviaTheme
+import com.jenningsdev.octavia.ui.viewmodels.AnalyticsScreenViewModel
 import com.jenningsdev.octavia.ui.viewmodels.DashboardViewModel
 import com.jenningsdev.octavia.ui.viewmodels.HomeScreenViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LessonListViewModel
@@ -146,41 +148,51 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(NavRoutes.dashboard.route) {
                                 val viewModel = viewModel<HomeScreenViewModel>()
+                                val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 var lessonsComplete by remember { mutableStateOf(0) }
-                                var lessonStatBetter by remember { mutableStateOf(0) }
-                                var lessonStatOkay by remember { mutableStateOf(0) }
-                                var lessonStatGreat by remember { mutableStateOf(0) }
+
+                                LaunchedEffect(Unit) {
+                                    lessonsComplete = viewModel.getLessonsComplete()
+                                }
+
+                                HomeScreen(
+                                    navController = navController,
+                                    navigationEvent = navigationEvent,
+                                    lessonsComplete = lessonsComplete,
+                                    onAnalyticsClick = { viewModel.onAnalyticsClick() },
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                            composable(NavRoutes.analytics.route) {
+                                val viewModel = viewModel<AnalyticsScreenViewModel>()
+
+                                var lessonStatGestureCorrect by remember { mutableStateOf(0) }
+                                var lessonStatGestureIncorrect by remember { mutableStateOf(0) }
                                 var lessonStatNoteCorrect by remember { mutableStateOf(0) }
                                 var lessonStatNoteIncorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalCorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalIncorrect by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
-                                    lessonsComplete = viewModel.getLessonsComplete()
-                                    lessonStatBetter = viewModel.getLessonStatBetter()
-                                    lessonStatOkay = viewModel.getLessonStatOkay()
-                                    lessonStatGreat = viewModel.getLessonStatGreat()
+                                    lessonStatGestureCorrect = viewModel.getLessonStatGestureCorrect()
+                                    lessonStatGestureIncorrect = viewModel.getLessonStatGestureIncorrect()
                                     lessonStatNoteCorrect = viewModel.getLessonStatNoteCorrect()
                                     lessonStatNoteIncorrect = viewModel.getLessonStatNoteIncorrect()
                                     lessonStatIntervalCorrect = viewModel.getLessonStatIntervalCorrect()
                                     lessonStatIntervalIncorrect = viewModel.getLessonStatIntervalIncorrect()
                                 }
 
-                                HomeScreen(
-                                    lessonsComplete = lessonsComplete,
-                                    lessonStatBetter = lessonStatBetter,
-                                    lessonStatOkay = lessonStatOkay,
-                                    lessonStatGreat = lessonStatGreat,
+                                AnalyticsScreen(
+                                    lessonStatGestureCorrect = lessonStatGestureCorrect,
+                                    lessonStatGestureIncorrect = lessonStatGestureIncorrect,
                                     lessonStatNoteCorrect = lessonStatNoteCorrect,
                                     lessonStatNoteIncorrect = lessonStatNoteIncorrect,
                                     lessonStatIntervalCorrect = lessonStatIntervalCorrect,
-                                    lessonStatIntervalIncorrect = lessonStatIntervalIncorrect,
-                                    modifier = Modifier.fillMaxSize()
+                                    lessonStatIntervalIncorrect = lessonStatIntervalIncorrect
                                 )
                             }
                             composable(NavRoutes.lessonList.route) {
                                 val viewModel = viewModel<LessonListViewModel>()
-                                val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 val lessons by viewModel.lessons.collectAsStateWithLifecycle()
                                 LessonListScreen(
                                     lessons = lessons,
@@ -239,9 +251,8 @@ class MainActivity : ComponentActivity() {
                                     updateLessonStatNoteIncorrect = { viewModel.updateLessonStatNoteIncorrect() },
                                     updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
                                     updateLessonStatIntervalIncorrect = { viewModel.updateLessonStatIntervalIncorrect() },
-                                    updateLessonStatBetter = { viewModel.updateLessonStatBetter() },
-                                    updateLessonStatOkay = { viewModel.updateLessonStatOkay() },
-                                    updateLessonStatGreat = { viewModel.updateLessonStatGreat() },
+                                    updateLessonStatGestureCorrect = { viewModel.updateLessonStatGestureCorrect() },
+                                    updateLessonStatGestureIncorrect = { viewModel.updateLessonStatGestureIncorrect() },
                                     reviewItems = reviewItems,
                                     detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },

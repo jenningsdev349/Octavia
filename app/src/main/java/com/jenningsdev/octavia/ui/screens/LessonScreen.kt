@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -103,9 +104,8 @@ fun LessonScreen(
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
@@ -131,9 +131,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
@@ -148,9 +147,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             gesture = gesture,
             modifier = modifier
@@ -180,9 +178,8 @@ fun LessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             startAudio = startAudio,
             modifier = modifier
@@ -278,11 +275,20 @@ fun ScaleInstructionsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            stringResource(R.string.perform_gesture_label, gesture.value.gestureName),
+            stringResource(R.string.perform_gesture_label),
             fontSize = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = gesture.value.gestureName,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         VideoPlayer(
             modifier = Modifier
@@ -319,6 +325,10 @@ fun IntervalInstructionsScreen(
     onSelectScreen: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pagerState = rememberPagerState(
+        pageCount = { 2 }
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -331,10 +341,50 @@ fun IntervalInstructionsScreen(
             fontSize = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(156.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            stringResource(R.string.note_interval_instructions_placeholder_text),
+            text = noteInterval.value.intervalName,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.note_interval_video_label),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalPager(
+            state = pagerState,
+        ) { index ->
+            when (index) {
+                0 -> VideoPlayer(
+                    modifier = Modifier
+                        .height(500.dp)
+                        .fillMaxWidth(),
+                    videoId = noteInterval.value.videoGesture1
+                )
+
+                1 -> VideoPlayer(
+                    modifier = Modifier
+                        .height(500.dp)
+                        .fillMaxWidth(),
+                    videoId = noteInterval.value.videoGesture2
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            "Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.",
             textAlign = TextAlign.Center
         )
 
@@ -429,9 +479,8 @@ fun PhotoReviewScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
@@ -508,17 +557,12 @@ fun PhotoReviewScreen(
                     onClick = {
                         when (selectedItem.id) {
                             1 -> {
-                                updateLessonStatBetter()
+                                updateLessonStatGestureCorrect()
                                 onNextClick()
                             }
 
                             2 -> {
-                                updateLessonStatOkay()
-                                onNextClick()
-                            }
-
-                            3 -> {
-                                updateLessonStatGreat()
+                                updateLessonStatGestureIncorrect()
                                 onNextClick()
                             }
                         }
@@ -551,9 +595,8 @@ fun ScaleLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     modifier: Modifier = Modifier
 ) {
@@ -619,6 +662,15 @@ fun ScaleLessonScreen(
                         R.string.perform_gesture_and_note_label, gesture.value.gestureName
                     ), fontSize = 18.sp
                 )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Note: $note", fontSize = 18.sp)
             }
 
             if (timerStarted) {
@@ -700,9 +752,8 @@ fun ScaleLessonScreen(
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             modifier = modifier.fillMaxSize(),
         )
@@ -824,6 +875,7 @@ fun NoteIntervalLessonScreen(
         }
     } else {
         IntervalReviewScreen(
+            noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
@@ -846,9 +898,8 @@ fun NoteIntervalCameraLessonScreen(
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit,
-    updateLessonStatBetter: () -> Unit,
-    updateLessonStatGreat: () -> Unit,
+    updateLessonStatGestureCorrect: () -> Unit,
+    updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     startAudio: () -> Unit,
     modifier: Modifier = Modifier
@@ -906,6 +957,14 @@ fun NoteIntervalCameraLessonScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            LaunchedEffect(timerStarted) {
+                secondsLeft = 5
+                while (secondsLeft > 0) {
+                    delay(1000)
+                    secondsLeft--
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -924,30 +983,25 @@ fun NoteIntervalCameraLessonScreen(
                     .height(36.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Note: $note", fontSize = 18.sp)
+                Text(stringResource(R.string.note_value_label, note ?: ""), fontSize = 18.sp)
             }
 
-            if (timerStarted && secondsLeft > 0) {
-                LaunchedEffect(Unit) {
-                    secondsLeft = 5
-                    while (secondsLeft > 0) {
-                        delay(1000)
-                        secondsLeft--
-                    }
-                    timerStarted = false
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(36.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (timerStarted)
                     Text(
                         stringResource(R.string.capturing_picture_label, secondsLeft),
                         fontSize = 18.sp
                     )
-                }
+                else
+                    Text(
+                        stringResource(R.string.capture_picture_label),
+                        fontSize = 18.sp
+                    )
             }
 
 
@@ -980,6 +1034,8 @@ fun NoteIntervalCameraLessonScreen(
                                 },
                                 context = context
                             )
+
+                            timerStarted = false
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -1009,15 +1065,15 @@ fun NoteIntervalCameraLessonScreen(
         }
     } else {
         IntervalReviewScreen(
+            noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
-            updateLessonStatOkay = updateLessonStatOkay,
-            updateLessonStatBetter = updateLessonStatBetter,
-            updateLessonStatGreat = updateLessonStatGreat,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             modifier = Modifier
                 .fillMaxSize()
@@ -1323,45 +1379,59 @@ fun ReviewDropdownMenu(
 
 @Composable
 fun IntervalReviewScreen(
+    noteInterval: State<NoteInterval>,
     isIntervalCorrect: Boolean,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
-    updateLessonStatOkay: () -> Unit = {},
-    updateLessonStatBetter: () -> Unit = {},
-    updateLessonStatGreat: () -> Unit = {},
+    updateLessonStatGestureCorrect: () -> Unit = {},
+    updateLessonStatGestureIncorrect: () -> Unit = {},
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
-    var selectedItem by remember { mutableStateOf(reviewItems.last()) }
+    var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
 
     val pagerState = rememberPagerState(
-        pageCount = { capturedBitmaps?.size!! }
+        pageCount = { 4 }
     )
 
-    if (capturedBitmaps?.isEmpty()!!) {
-        Box(
+    if (capturedBitmaps == null) {
+        Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            if (isIntervalCorrect) Text(
-                stringResource(R.string.note_interval_correct), modifier = Modifier.align(
-                    Alignment.Center
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isIntervalCorrect) Text(
+                    stringResource(R.string.note_interval_correct),
+                    fontSize = 18.sp
+                ) else Text(
+                    stringResource(R.string.note_interval_incorrect),
+                    fontSize = 18.sp
                 )
-            ) else Text(
-                stringResource(R.string.note_interval_incorrect), modifier = Modifier.align(
-                    Alignment.Center
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Image(
+                    painter = painterResource(R.drawable.musical_note),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(120.dp)
                 )
-            )
+            }
 
             Button(
                 onClick = onNextClick,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
                 Text(stringResource(R.string.proceed_to_next_screen_button))
@@ -1388,12 +1458,39 @@ fun IntervalReviewScreen(
                 HorizontalPager(
                     state = pagerState,
                 ) { index ->
-                    Image(
-                        bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    val bitmap = capturedBitmaps.getOrNull(index)?.asImageBitmap()
+
+                    when (index) {
+                        0 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        1 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        2 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture1
+                        )
+
+                        3 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture2
+                        )
+                    }
                 }
 
                 Column(
@@ -1402,29 +1499,26 @@ fun IntervalReviewScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ReviewDropdownMenu(
-                        reviewItems = reviewItems,
-                        selectedItem = selectedItem,
-                        onItemSelected = { item ->
-                            selectedItem = item
-                        }
-                    )
+                    selectedItem?.let {
+                        ReviewDropdownMenu(
+                            reviewItems = reviewItems,
+                            selectedItem = it,
+                            onItemSelected = { item ->
+                                selectedItem = item
+                            }
+                        )
+                    }
 
                     Button(
                         onClick = {
-                            when (selectedItem.id) {
+                            when (selectedItem?.id) {
                                 1 -> {
-                                    updateLessonStatBetter()
+                                    updateLessonStatGestureCorrect()
                                     onNextClick()
                                 }
 
                                 2 -> {
-                                    updateLessonStatOkay()
-                                    onNextClick()
-                                }
-
-                                3 -> {
-                                    updateLessonStatGreat()
+                                    updateLessonStatGestureIncorrect()
                                     onNextClick()
                                 }
                             }
