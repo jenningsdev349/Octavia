@@ -195,6 +195,8 @@ fun LessonScreen(
         6 -> EarTrainingCameraLessonScreen(
             noteInterval = noteInterval,
             updateLessonsComplete = updateLessonsComplete,
+            reviewItems = reviewItems,
+            onNextClick = onNextClick,
             modifier = modifier
         )
 
@@ -608,10 +610,6 @@ fun ScaleLessonScreen(
     var timerStarted by remember { mutableStateOf(false) }
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-    LaunchedEffect(capturedBitmap) {
-        Log.d("BitmapDebug", "capturedBitmap updated: $capturedBitmap")
-    }
-
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(CameraController.IMAGE_CAPTURE)
@@ -944,13 +942,6 @@ fun NoteIntervalCameraLessonScreen(
         }
     }
 
-    LaunchedEffect(capturedBitmap1) {
-        Log.d("BitmapDebug", "capturedBitmap1 updated: $capturedBitmap1")
-    }
-    LaunchedEffect(capturedBitmap2) {
-        Log.d("BitmapDebug", "capturedBitmap2 updated: $capturedBitmap2")
-    }
-
     if (!finalButtonClicked) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -1149,7 +1140,7 @@ fun EarTrainingLessonScreen(
 
             Image(
                 painter = painterResource(R.drawable.music_notes),
-                contentDescription = "Ear Training Lesson Image",
+                contentDescription = stringResource(R.string.ear_training_content_description),
                 modifier = Modifier.size(100.dp)
             )
 
@@ -1173,12 +1164,10 @@ fun EarTrainingLessonScreen(
                 OutlinedButton(
                     onClick = {
                         if (interval == noteInterval.value) {
-                            Log.d("noteInterval", "Success!")
                             isCorrect = true
                             buttonClicked = true
                             updateLessonsComplete()
                         } else {
-                            Log.d("noteInterval", "Fail!")
                             buttonClicked = true
                             updateLessonsComplete()
                         }
@@ -1209,6 +1198,7 @@ fun EarTrainingLessonScreen(
     } else {
         EarTrainingReviewScreen(
             isIntervalCorrect = isCorrect,
+            noteInterval = noteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             modifier = modifier
@@ -1220,6 +1210,8 @@ fun EarTrainingLessonScreen(
 fun EarTrainingCameraLessonScreen(
     noteInterval: State<NoteInterval>,
     updateLessonsComplete: () -> Unit,
+    reviewItems: List<GestureRating>,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -1262,13 +1254,6 @@ fun EarTrainingCameraLessonScreen(
         }
     }
 
-    LaunchedEffect(capturedBitmap1) {
-        Log.d("BitmapDebug", "capturedBitmap1 updated: $capturedBitmap1")
-    }
-    LaunchedEffect(capturedBitmap2) {
-        Log.d("BitmapDebug", "capturedBitmap2 updated: $capturedBitmap2")
-    }
-
     if (!finalButtonClicked) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -1288,7 +1273,7 @@ fun EarTrainingCameraLessonScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "What note interval was played? Perform both gestures!",
+                    text = stringResource(R.string.ear_training_label),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp
                 )
@@ -1349,8 +1334,8 @@ fun EarTrainingCameraLessonScreen(
                         .padding(16.dp)
                         .align(Alignment.BottomCenter)
                 ) {
-                    if (currentPhoto == 1) Text("Capture first photo") else Text(
-                        "Capture second photo"
+                    if (currentPhoto == 1) Text(stringResource(R.string.capture_first_photo_button)) else Text(
+                        stringResource(R.string.capture_second_photo_button)
                     )
                 }
 
@@ -1370,7 +1355,15 @@ fun EarTrainingCameraLessonScreen(
             }
         }
     } else {
-
+        EarTrainingReviewScreen(
+            isIntervalCorrect = null,
+            noteInterval = noteInterval,
+            capturedBitmaps = bitmaps,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            reviewItems = reviewItems,
+            modifier = modifier
+        )
     }
 }
 
@@ -1588,25 +1581,17 @@ fun IntervalReviewScreen(
 @Composable
 fun EarTrainingReviewScreen(
     isIntervalCorrect: Boolean? = null,
+    noteInterval: State<NoteInterval>,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLessonStatOkay: () -> Unit = {},
-    updateLessonStatBetter: () -> Unit = {},
-    updateLessonStatGreat: () -> Unit = {},
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
     var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
 
     val pagerState = rememberPagerState(
-        pageCount = {
-            if (capturedBitmaps?.isNotEmpty() == true) {
-                capturedBitmaps.size
-            } else {
-                0
-            }
-        }
+        pageCount = { 4 }
     )
 
     if (capturedBitmaps.isNullOrEmpty()) {
@@ -1677,9 +1662,19 @@ fun EarTrainingReviewScreen(
                     .height(48.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (isIntervalCorrect == true) Text(stringResource(R.string.note_interval_correct)) else Text(
-                    stringResource(R.string.note_interval_incorrect)
+                Text(
+                    "Note Interval was: ${noteInterval.value.intervalName}",
+                    fontSize = 18.sp
                 )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(stringResource(R.string.swipe_right_label), fontSize = 24.sp)
             }
 
             Box(
@@ -1688,12 +1683,39 @@ fun EarTrainingReviewScreen(
                 HorizontalPager(
                     state = pagerState,
                 ) { index ->
-                    Image(
-                        bitmap = capturedBitmaps?.get(index)?.asImageBitmap()!!,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    val bitmap = capturedBitmaps.getOrNull(index)?.asImageBitmap()
+
+                    when (index) {
+                        0 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        1 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        2 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture1
+                        )
+
+                        3 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture2
+                        )
+                    }
                 }
 
                 Column(
@@ -1716,20 +1738,14 @@ fun EarTrainingReviewScreen(
                         onClick = {
                             when (selectedItem?.id) {
                                 1 -> {
-                                    updateLessonStatBetter()
                                     onNextClick()
                                 }
 
                                 2 -> {
-                                    updateLessonStatOkay()
-                                    onNextClick()
-                                }
-
-                                3 -> {
-                                    updateLessonStatGreat()
                                     onNextClick()
                                 }
                             }
+
                             updateLessonsComplete()
                             onNextClick()
                         },

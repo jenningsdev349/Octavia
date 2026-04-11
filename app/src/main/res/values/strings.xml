@@ -64,4 +64,9 @@
     <string name="what_interval_played_label">What interval was just played?</string>
     <string name="guess_interval_label">Guess Correct Interval!</string>
     <string name="play_sound_button">Play Sound Again</string>
+    <string name="ear_training_label">What note interval was played? Perform both gestures!</string>
+    <string name="ear_training_content_description">Ear Training Lesson Image</string>
+    <string name="capture_first_photo_button">Capture first photo</string>
+    <string name="capture_second_photo_button">Capture second photo</string>
+    <string name="swipe_right_label">Swipe right to compare!</string>
 </resources>
