@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -195,7 +194,6 @@ fun LessonScreen(
 
         6 -> EarTrainingCameraLessonScreen(
             noteInterval = noteInterval,
-            onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             modifier = modifier
         )
@@ -1092,9 +1090,28 @@ fun EarTrainingLessonScreen(
     val intervals = remember(noteInterval.value, randomIntervals.value) {
         (randomIntervals.value + noteInterval.value).shuffled()
     }
+    val context = LocalContext.current
 
     var buttonClicked by remember { mutableStateOf(false) }
     var isCorrect by remember { mutableStateOf(false) }
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val uri = MediaItem.fromUri(
+                "android.resource://${context.packageName}/${noteInterval.value.sound}"
+            )
+            setMediaItem(uri)
+            prepare()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        exoPlayer.play()
+    }
+
+    DisposableEffect(key1 = exoPlayer) {
+        onDispose { exoPlayer.release() }
+    }
 
     if (!buttonClicked) {
         Column(
@@ -1159,9 +1176,11 @@ fun EarTrainingLessonScreen(
                             Log.d("noteInterval", "Success!")
                             isCorrect = true
                             buttonClicked = true
+                            updateLessonsComplete()
                         } else {
                             Log.d("noteInterval", "Fail!")
                             buttonClicked = true
+                            updateLessonsComplete()
                         }
                     },
                     border = BorderStroke(2.dp, colorResource(R.color.colour3)),
@@ -1200,7 +1219,6 @@ fun EarTrainingLessonScreen(
 @Composable
 fun EarTrainingCameraLessonScreen(
     noteInterval: State<NoteInterval>,
-    onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -1218,6 +1236,24 @@ fun EarTrainingCameraLessonScreen(
     val bitmaps = listOf(capturedBitmap1, capturedBitmap2)
 
     val context = LocalContext.current
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val uri = MediaItem.fromUri(
+                "android.resource://${context.packageName}/${noteInterval.value.sound}"
+            )
+            setMediaItem(uri)
+            prepare()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        exoPlayer.play()
+    }
+
+    DisposableEffect(key1 = exoPlayer) {
+        onDispose { exoPlayer.release() }
+    }
 
     val controller = remember {
         LifecycleCameraController(context).apply {
@@ -1237,38 +1273,43 @@ fun EarTrainingCameraLessonScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            LaunchedEffect(timerStarted) {
+                secondsLeft = 5
+                while (secondsLeft > 0) {
+                    delay(1000)
+                    secondsLeft--
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "What note interval was played? Perform both gestures!",
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(36.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "What interval was just played?",
-                    fontSize = 18.sp
-                )
-            }
-
-            if (timerStarted && secondsLeft > 0) {
-                LaunchedEffect(Unit) {
-                    secondsLeft = 5
-                    while (secondsLeft > 0) {
-                        delay(1000)
-                        secondsLeft--
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(36.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+                if (timerStarted)
                     Text(
                         stringResource(R.string.capturing_picture_label, secondsLeft),
                         fontSize = 18.sp
                     )
-                }
+                else
+                    Text(
+                        stringResource(R.string.capture_picture_label),
+                        fontSize = 18.sp
+                    )
             }
 
 
@@ -1299,6 +1340,8 @@ fun EarTrainingCameraLessonScreen(
                                 },
                                 context = context
                             )
+
+                            timerStarted = false
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -1306,8 +1349,8 @@ fun EarTrainingCameraLessonScreen(
                         .padding(16.dp)
                         .align(Alignment.BottomCenter)
                 ) {
-                    if (currentPhoto == 1) Text(stringResource(R.string.capture_first_note_button)) else Text(
-                        stringResource(R.string.capture_second_note_button)
+                    if (currentPhoto == 1) Text("Capture first photo") else Text(
+                        "Capture second photo"
                     )
                 }
 
