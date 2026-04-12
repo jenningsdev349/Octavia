@@ -10,5 +10,7 @@ data class User(
     val lessonStatNoteIncorrect: Int,
     val lessonStatIntervalCorrect: Int,
     val lessonStatIntervalIncorrect: Int,
+    val lessonStatEarTrainingCorrect: Int,
+    val lessonStatEarTrainingIncorrect: Int,
     val points: Int
 )

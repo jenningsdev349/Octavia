@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -103,6 +102,8 @@ fun LessonScreen(
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit,
+    updateLessonStatEarTrainingIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit,
     updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
@@ -189,14 +190,20 @@ fun LessonScreen(
             randomIntervals = randomIntervals,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
             modifier = modifier
         )
 
         6 -> EarTrainingCameraLessonScreen(
             noteInterval = noteInterval,
-            updateLessonsComplete = updateLessonsComplete,
             reviewItems = reviewItems,
             onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             modifier = modifier
         )
 
@@ -384,7 +391,7 @@ fun IntervalInstructionsScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            "Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.",
+            stringResource(R.string.note_interval_instructions),
             textAlign = TextAlign.Center
         )
 
@@ -1076,6 +1083,8 @@ fun EarTrainingLessonScreen(
     randomIntervals: State<List<NoteInterval>>,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit,
+    updateLessonStatEarTrainingIncorrect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val intervals = remember(noteInterval.value, randomIntervals.value) {
@@ -1166,9 +1175,11 @@ fun EarTrainingLessonScreen(
                         if (interval == noteInterval.value) {
                             isCorrect = true
                             buttonClicked = true
+                            updateLessonStatEarTrainingCorrect()
                             updateLessonsComplete()
                         } else {
                             buttonClicked = true
+                            updateLessonStatEarTrainingIncorrect()
                             updateLessonsComplete()
                         }
                     },
@@ -1209,9 +1220,13 @@ fun EarTrainingLessonScreen(
 @Composable
 fun EarTrainingCameraLessonScreen(
     noteInterval: State<NoteInterval>,
-    updateLessonsComplete: () -> Unit,
     reviewItems: List<GestureRating>,
     onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit = { },
+    updateLessonStatEarTrainingIncorrect: () -> Unit = { },
+    updateLessonStatGestureCorrect: () -> Unit = {  },
+    updateLessonStatGestureIncorrect: () -> Unit = { },
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -1361,6 +1376,10 @@ fun EarTrainingCameraLessonScreen(
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             modifier = modifier
         )
@@ -1585,6 +1604,10 @@ fun EarTrainingReviewScreen(
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit = { },
+    updateLessonStatEarTrainingIncorrect: () -> Unit = {},
+    updateLessonStatGestureCorrect: () -> Unit = {},
+    updateLessonStatGestureIncorrect: () -> Unit = {},
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
@@ -1738,10 +1761,14 @@ fun EarTrainingReviewScreen(
                         onClick = {
                             when (selectedItem?.id) {
                                 1 -> {
+                                    updateLessonStatEarTrainingCorrect()
+                                    updateLessonStatGestureCorrect()
                                     onNextClick()
                                 }
 
                                 2 -> {
+                                    updateLessonStatEarTrainingIncorrect()
+                                    updateLessonStatGestureIncorrect()
                                     onNextClick()
                                 }
                             }

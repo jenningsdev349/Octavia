@@ -44,11 +44,14 @@ fun AnalyticsScreen(
     lessonStatNoteIncorrect: Int,
     lessonStatIntervalCorrect: Int,
     lessonStatIntervalIncorrect: Int,
+    lessonStatEarTrainingCorrect: Int,
+    lessonStatEarTrainingIncorrect: Int,
     modifier: Modifier = Modifier
 ) {
     val gestureLessonData = listOf(lessonStatGestureCorrect, lessonStatGestureIncorrect)
     val noteLessonData = listOf(lessonStatNoteCorrect, lessonStatNoteIncorrect)
     val intervalLessonData = listOf(lessonStatIntervalCorrect, lessonStatIntervalIncorrect)
+    val earTrainingLessonData = listOf(lessonStatEarTrainingCorrect, lessonStatEarTrainingIncorrect)
 
     Column(
         modifier = Modifier
@@ -112,6 +115,19 @@ fun AnalyticsScreen(
 
         BarChart(
             data = intervalLessonData,
+            labels = listOf("Correct", "Incorrect")
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Text(
+            stringResource(R.string.ear_training_stats_label),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+
+        BarChart(
+            data = earTrainingLessonData,
             labels = listOf("Correct", "Incorrect")
         )
     }

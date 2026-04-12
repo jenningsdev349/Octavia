@@ -172,6 +172,8 @@ class MainActivity : ComponentActivity() {
                                 var lessonStatNoteIncorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalCorrect by remember { mutableStateOf(0) }
                                 var lessonStatIntervalIncorrect by remember { mutableStateOf(0) }
+                                var lessonStatEarTrainingCorrect by remember { mutableStateOf(0) }
+                                var lessonStatEarTrainingIncorrect by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
                                     lessonStatGestureCorrect = viewModel.getLessonStatGestureCorrect()
@@ -180,6 +182,8 @@ class MainActivity : ComponentActivity() {
                                     lessonStatNoteIncorrect = viewModel.getLessonStatNoteIncorrect()
                                     lessonStatIntervalCorrect = viewModel.getLessonStatIntervalCorrect()
                                     lessonStatIntervalIncorrect = viewModel.getLessonStatIntervalIncorrect()
+                                    lessonStatEarTrainingCorrect = viewModel.getLessonStatEarTrainingCorrect()
+                                    lessonStatEarTrainingIncorrect = viewModel.getLessonStatEarTrainingIncorrect()
                                 }
 
                                 AnalyticsScreen(
@@ -188,7 +192,9 @@ class MainActivity : ComponentActivity() {
                                     lessonStatNoteCorrect = lessonStatNoteCorrect,
                                     lessonStatNoteIncorrect = lessonStatNoteIncorrect,
                                     lessonStatIntervalCorrect = lessonStatIntervalCorrect,
-                                    lessonStatIntervalIncorrect = lessonStatIntervalIncorrect
+                                    lessonStatIntervalIncorrect = lessonStatIntervalIncorrect,
+                                    lessonStatEarTrainingCorrect = lessonStatEarTrainingCorrect,
+                                    lessonStatEarTrainingIncorrect = lessonStatEarTrainingIncorrect,
                                 )
                             }
                             composable(NavRoutes.lessonList.route) {
@@ -253,6 +259,8 @@ class MainActivity : ComponentActivity() {
                                     updateLessonStatIntervalIncorrect = { viewModel.updateLessonStatIntervalIncorrect() },
                                     updateLessonStatGestureCorrect = { viewModel.updateLessonStatGestureCorrect() },
                                     updateLessonStatGestureIncorrect = { viewModel.updateLessonStatGestureIncorrect() },
+                                    updateLessonStatEarTrainingCorrect = { viewModel.updateLessonStatEarTrainingCorrect() },
+                                    updateLessonStatEarTrainingIncorrect = { viewModel.updateLessonStatEarTrainingIncorrect() },
                                     reviewItems = reviewItems,
                                     detectNoteInterval = viewModel.detectNoteInterval(),
                                     stopAudio = { viewModel.stopAudio() },

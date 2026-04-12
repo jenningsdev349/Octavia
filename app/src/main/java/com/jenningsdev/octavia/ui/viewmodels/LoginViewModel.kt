@@ -98,6 +98,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             lessonStatNoteIncorrect = 0,
             lessonStatIntervalCorrect = 0,
             lessonStatIntervalIncorrect = 0,
+            lessonStatEarTrainingCorrect = 0,
+            lessonStatEarTrainingIncorrect = 0,
             points = 0
         )
         if (uid != null) {

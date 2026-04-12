@@ -223,6 +223,64 @@ class UserRepository(
         }
     }
 
+    suspend fun getLessonStatEarTrainingCorrect(): Int {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatEarTrainingCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return lessonStat ?: 0
+    }
+
+    suspend fun updateLessonStatEarTrainingCorrect() {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatEarTrainingCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (lessonStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonStatEarTrainingCorrect")
+                .setValue(lessonStat + 1)
+        }
+    }
+
+    suspend fun getLessonStatEarTrainingIncorrect(): Int {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatEarTrainingIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return lessonStat ?: 0
+    }
+
+    suspend fun updateLessonStatEarTrainingIncorrect() {
+        val lessonStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonStatEarTrainingIncorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (lessonStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonStatEarTrainingIncorrect")
+                .setValue(lessonStat + 1)
+        }
+    }
+
     suspend fun getCurrentUserName(): String? {
         val username: String? = database
             .child("users")

@@ -92,6 +92,18 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun updateLessonStatEarTrainingCorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatEarTrainingCorrect()
+        }
+    }
+
+    fun updateLessonStatEarTrainingIncorrect() {
+        viewModelScope.launch {
+            userRepository.updateLessonStatEarTrainingIncorrect()
+        }
+    }
+
     fun isMajorNoteCorrect(): Boolean {
         return _note.value == _gesture.value.majorNote
     }

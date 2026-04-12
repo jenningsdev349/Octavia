@@ -69,4 +69,6 @@
     <string name="capture_first_photo_button">Capture first photo</string>
     <string name="capture_second_photo_button">Capture second photo</string>
     <string name="swipe_right_label">Swipe right to compare!</string>
+    <string name="ear_training_stats_label">Ear Training Lesson Stats</string>
+    <string name="note_interval_instructions">Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.</string>
 </resources>

@@ -36,4 +36,12 @@ class AnalyticsScreenViewModel(application: Application) : AndroidViewModel(appl
     suspend fun getLessonStatIntervalIncorrect(): Int {
         return userRepository.getLessonStatIntervalIncorrect()
     }
+
+    suspend fun getLessonStatEarTrainingCorrect(): Int {
+        return userRepository.getLessonStatEarTrainingCorrect()
+    }
+
+    suspend fun getLessonStatEarTrainingIncorrect(): Int {
+        return userRepository.getLessonStatEarTrainingIncorrect()
+    }
 }
