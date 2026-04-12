@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -17,18 +16,21 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +40,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -86,6 +90,7 @@ fun LessonScreen(
     gesture: State<Gesture>,
     note: String?,
     noteInterval: State<NoteInterval>,
+    randomIntervals: State<List<NoteInterval>>,
     startAudio: () -> Unit,
     stopAudio: () -> Unit,
     isMajorNoteCorrect: Boolean,
@@ -97,6 +102,8 @@ fun LessonScreen(
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit,
+    updateLessonStatEarTrainingIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit,
     updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
@@ -178,6 +185,28 @@ fun LessonScreen(
             modifier = modifier
         )
 
+        5 -> EarTrainingLessonScreen(
+            noteInterval = noteInterval,
+            randomIntervals = randomIntervals,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
+            modifier = modifier
+        )
+
+        6 -> EarTrainingCameraLessonScreen(
+            noteInterval = noteInterval,
+            reviewItems = reviewItems,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
+            modifier = modifier
+        )
+
         null -> InstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = { selectedScreen = it },
@@ -222,6 +251,18 @@ fun InstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = onSelectScreen,
             noteInterval = noteInterval,
+            modifier = modifier
+        )
+
+        5 -> EarTrainingInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            modifier = modifier
+        )
+
+        6 -> EarTrainingInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
             modifier = modifier
         )
     }
@@ -302,7 +343,8 @@ fun IntervalInstructionsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            stringResource(R.string.perform_gesture_label),
+            "Play the following Note Interval: ${noteInterval.value.intervalName}",
+            textAlign = TextAlign.Center,
             fontSize = 18.sp
         )
 
@@ -349,7 +391,56 @@ fun IntervalInstructionsScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            "Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.",
+            stringResource(R.string.note_interval_instructions),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = {
+                onSelectScreen(lessonId)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.lesson_instructions_button))
+        }
+    }
+}
+
+@Composable
+fun EarTrainingInstructionsScreen(
+    lessonId: Int,
+    onSelectScreen: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            "Ear Training Lesson",
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp
+        )
+
+        Spacer(modifier = Modifier.height(144.dp))
+
+        Image(
+            painter = painterResource(R.drawable.hearing),
+            contentDescription = "Ear Training Image",
+            modifier = Modifier.size(200.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            stringResource(R.string.ear_training_instructions_text),
             textAlign = TextAlign.Center
         )
 
@@ -415,10 +506,22 @@ fun PhotoReviewScreen(
                 .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (isNoteCorrect) Text(stringResource(R.string.correct_note_label)) else Text(
+            if (isNoteCorrect) Text(
+                stringResource(R.string.correct_note_label),
+                fontSize = 24.sp
+            ) else Text(
                 stringResource(R.string.incorrect_note_label),
                 fontSize = 24.sp
             )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Swipe right to compare!", fontSize = 24.sp)
         }
 
         Box(
@@ -513,10 +616,6 @@ fun ScaleLessonScreen(
     var secondsLeft by remember { mutableStateOf(5) }
     var timerStarted by remember { mutableStateOf(false) }
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-    LaunchedEffect(capturedBitmap) {
-        Log.d("BitmapDebug", "capturedBitmap updated: $capturedBitmap")
-    }
 
     val controller = remember {
         LifecycleCameraController(context).apply {
@@ -718,6 +817,7 @@ fun NoteIntervalLessonScreen(
             ) {
                 Text(
                     "Play this note interval: ${noteInterval.value.intervalName}",
+                    textAlign = TextAlign.Center,
                     fontSize = 18.sp
                 )
             }
@@ -849,13 +949,6 @@ fun NoteIntervalCameraLessonScreen(
         }
     }
 
-    LaunchedEffect(capturedBitmap1) {
-        Log.d("BitmapDebug", "capturedBitmap1 updated: $capturedBitmap1")
-    }
-    LaunchedEffect(capturedBitmap2) {
-        Log.d("BitmapDebug", "capturedBitmap2 updated: $capturedBitmap2")
-    }
-
     if (!finalButtonClicked) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -980,6 +1073,315 @@ fun NoteIntervalCameraLessonScreen(
             reviewItems = reviewItems,
             modifier = Modifier
                 .fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun EarTrainingLessonScreen(
+    noteInterval: State<NoteInterval>,
+    randomIntervals: State<List<NoteInterval>>,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit,
+    updateLessonStatEarTrainingIncorrect: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val intervals = remember(noteInterval.value, randomIntervals.value) {
+        (randomIntervals.value + noteInterval.value).shuffled()
+    }
+    val context = LocalContext.current
+
+    var buttonClicked by remember { mutableStateOf(false) }
+    var isCorrect by remember { mutableStateOf(false) }
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val uri = MediaItem.fromUri(
+                "android.resource://${context.packageName}/${noteInterval.value.sound}"
+            )
+            setMediaItem(uri)
+            prepare()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        exoPlayer.play()
+    }
+
+    DisposableEffect(key1 = exoPlayer) {
+        onDispose { exoPlayer.release() }
+    }
+
+    if (!buttonClicked) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Image(
+                painter = painterResource(R.drawable.piano),
+                contentDescription = "Octavia",
+                modifier = Modifier.size(100.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.app_name),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            HorizontalDivider(
+                color = Color.LightGray,
+                thickness = 1.dp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Image(
+                painter = painterResource(R.drawable.music_notes),
+                contentDescription = stringResource(R.string.ear_training_content_description),
+                modifier = Modifier.size(100.dp)
+            )
+
+            Text(
+                stringResource(R.string.guess_interval_label),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Text(
+                stringResource(R.string.what_interval_played_label),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            intervals.forEach { interval ->
+                OutlinedButton(
+                    onClick = {
+                        if (interval == noteInterval.value) {
+                            isCorrect = true
+                            buttonClicked = true
+                            updateLessonStatEarTrainingCorrect()
+                            updateLessonsComplete()
+                        } else {
+                            buttonClicked = true
+                            updateLessonStatEarTrainingIncorrect()
+                            updateLessonsComplete()
+                        }
+                    },
+                    border = BorderStroke(2.dp, colorResource(R.color.colour3)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(R.color.colour3)
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(interval.intervalName)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Button(
+                onClick = {
+
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.play_sound_button))
+            }
+        }
+    } else {
+        EarTrainingReviewScreen(
+            isIntervalCorrect = isCorrect,
+            noteInterval = noteInterval,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun EarTrainingCameraLessonScreen(
+    noteInterval: State<NoteInterval>,
+    reviewItems: List<GestureRating>,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit = { },
+    updateLessonStatEarTrainingIncorrect: () -> Unit = { },
+    updateLessonStatGestureCorrect: () -> Unit = {  },
+    updateLessonStatGestureIncorrect: () -> Unit = { },
+    modifier: Modifier = Modifier
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    var currentPhoto by remember { mutableStateOf(1) }
+    var showFinalButton by remember { mutableStateOf(false) }
+    var finalButtonClicked by remember { mutableStateOf(false) }
+
+    var secondsLeft by remember { mutableStateOf(5) }
+    var timerStarted by remember { mutableStateOf(false) }
+
+    var capturedBitmap1 by remember { mutableStateOf<Bitmap?>(null) }
+    var capturedBitmap2 by remember { mutableStateOf<Bitmap?>(null) }
+    val bitmaps = listOf(capturedBitmap1, capturedBitmap2)
+
+    val context = LocalContext.current
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val uri = MediaItem.fromUri(
+                "android.resource://${context.packageName}/${noteInterval.value.sound}"
+            )
+            setMediaItem(uri)
+            prepare()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        exoPlayer.play()
+    }
+
+    DisposableEffect(key1 = exoPlayer) {
+        onDispose { exoPlayer.release() }
+    }
+
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(CameraController.IMAGE_CAPTURE)
+            cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+    }
+
+    if (!finalButtonClicked) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LaunchedEffect(timerStarted) {
+                secondsLeft = 5
+                while (secondsLeft > 0) {
+                    delay(1000)
+                    secondsLeft--
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.ear_training_label),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (timerStarted)
+                    Text(
+                        stringResource(R.string.capturing_picture_label, secondsLeft),
+                        fontSize = 18.sp
+                    )
+                else
+                    Text(
+                        stringResource(R.string.capture_picture_label),
+                        fontSize = 18.sp
+                    )
+            }
+
+
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+
+                CameraPreview(
+                    controller = controller, modifier = modifier.fillMaxSize()
+                )
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            timerStarted = true
+
+                            delay(5000L)
+
+                            takePhoto(
+                                controller = controller, onPhotoTaken = { bitmap ->
+                                    if (currentPhoto == 1) {
+                                        capturedBitmap1 = bitmap
+                                        currentPhoto = 2
+                                    } else {
+                                        capturedBitmap2 = bitmap
+                                        showFinalButton = true
+                                    }
+                                },
+                                context = context
+                            )
+
+                            timerStarted = false
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    if (currentPhoto == 1) Text(stringResource(R.string.capture_first_photo_button)) else Text(
+                        stringResource(R.string.capture_second_photo_button)
+                    )
+                }
+
+                if (showFinalButton) {
+                    Button(
+                        onClick = {
+                            finalButtonClicked = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(stringResource(R.string.proceed_to_next_screen_button))
+                    }
+                }
+            }
+        }
+    } else {
+        EarTrainingReviewScreen(
+            isIntervalCorrect = null,
+            noteInterval = noteInterval,
+            capturedBitmaps = bitmaps,
+            onNextClick = onNextClick,
+            updateLessonsComplete = updateLessonsComplete,
+            updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
+            updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
+            updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
+            updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
+            reviewItems = reviewItems,
+            modifier = modifier
         )
     }
 }
@@ -1180,6 +1582,197 @@ fun IntervalReviewScreen(
                             } else {
                                 updateLessonStatIntervalIncorrect()
                             }
+                            updateLessonsComplete()
+                            onNextClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(stringResource(R.string.next_button))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EarTrainingReviewScreen(
+    isIntervalCorrect: Boolean? = null,
+    noteInterval: State<NoteInterval>,
+    capturedBitmaps: List<Bitmap?>? = null,
+    onNextClick: () -> Unit,
+    updateLessonsComplete: () -> Unit,
+    updateLessonStatEarTrainingCorrect: () -> Unit = { },
+    updateLessonStatEarTrainingIncorrect: () -> Unit = {},
+    updateLessonStatGestureCorrect: () -> Unit = {},
+    updateLessonStatGestureIncorrect: () -> Unit = {},
+    reviewItems: List<GestureRating> = listOf(),
+    modifier: Modifier = Modifier
+) {
+    var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
+
+    val pagerState = rememberPagerState(
+        pageCount = { 4 }
+    )
+
+    if (capturedBitmaps.isNullOrEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.hearing),
+                    contentDescription = "Analytics",
+                    modifier = Modifier.size(75.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    "Ear Training Lesson",
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(144.dp))
+
+            Image(
+                painter = if (isIntervalCorrect == true) painterResource(R.drawable.check) else painterResource(
+                    R.drawable.incorrect
+                ),
+                contentDescription = "Correct or incorrect",
+                modifier = Modifier.size(200.dp)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = if (isIntervalCorrect == true) "Correct!" else "Incorrect, try again!",
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = onNextClick,
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.next_button))
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Note Interval was: ${noteInterval.value.intervalName}",
+                    fontSize = 18.sp
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(stringResource(R.string.swipe_right_label), fontSize = 24.sp)
+            }
+
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                ) { index ->
+                    val bitmap = capturedBitmaps.getOrNull(index)?.asImageBitmap()
+
+                    when (index) {
+                        0 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        1 -> if (bitmap != null) {
+                            Image(
+                                bitmap = capturedBitmaps[index]?.asImageBitmap()!!,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        2 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture1
+                        )
+
+                        3 -> VideoPlayer(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            videoId = noteInterval.value.videoGesture2
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    selectedItem?.let {
+                        ReviewDropdownMenu(
+                            reviewItems = reviewItems,
+                            selectedItem = it,
+                            onItemSelected = { item ->
+                                selectedItem = item
+                            }
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            when (selectedItem?.id) {
+                                1 -> {
+                                    updateLessonStatEarTrainingCorrect()
+                                    updateLessonStatGestureCorrect()
+                                    onNextClick()
+                                }
+
+                                2 -> {
+                                    updateLessonStatEarTrainingIncorrect()
+                                    updateLessonStatGestureIncorrect()
+                                    onNextClick()
+                                }
+                            }
+
                             updateLessonsComplete()
                             onNextClick()
                         },
