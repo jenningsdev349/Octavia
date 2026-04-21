@@ -70,13 +70,6 @@ class MainActivity : ComponentActivity() {
                         NavRoutes.splashScreen.route
                     }
                 Scaffold(
-                    topBar = {
-                        if (currentRoute in listOf("dashboard", "lessonList", "profile")) {
-                            TopAppBar(
-                                title = { Text(stringResource(R.string.dashboard_app_bar)) }
-                            )
-                        }
-                    },
                     bottomBar = {
                         if (currentRoute in listOf("dashboard", "lessonList", "profile")) {
                             BottomNavigationBar(

@@ -154,7 +154,7 @@ fun LessonScreen(
             modifier = modifier
         )
 
-        3 -> NoteIntervalLessonScreen(
+        4 -> NoteIntervalLessonScreen(
             note = note,
             noteInterval = noteInterval,
             captureFirstNote = captureFirstNote,
@@ -168,7 +168,7 @@ fun LessonScreen(
             modifier = modifier
         )
 
-        4 -> NoteIntervalCameraLessonScreen(
+        5 -> NoteIntervalCameraLessonScreen(
             note = note,
             noteInterval = noteInterval,
             captureFirstNote = captureFirstNote,
@@ -185,7 +185,7 @@ fun LessonScreen(
             modifier = modifier
         )
 
-        5 -> EarTrainingLessonScreen(
+        6 -> EarTrainingLessonScreen(
             noteInterval = noteInterval,
             randomIntervals = randomIntervals,
             onNextClick = onNextClick,
@@ -195,7 +195,7 @@ fun LessonScreen(
             modifier = modifier
         )
 
-        6 -> EarTrainingCameraLessonScreen(
+        7 -> EarTrainingCameraLessonScreen(
             noteInterval = noteInterval,
             reviewItems = reviewItems,
             onNextClick = onNextClick,
@@ -212,6 +212,7 @@ fun LessonScreen(
             onSelectScreen = { selectedScreen = it },
             gesture = gesture,
             noteInterval = noteInterval,
+            onNextClick = onNextClick,
             modifier = modifier
         )
     }
@@ -223,9 +224,15 @@ fun InstructionsScreen(
     onSelectScreen: (Int) -> Unit,
     gesture: State<Gesture>,
     noteInterval: State<NoteInterval>,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (lessonId) {
+        0 -> ScaleIntroductionScreen(
+            onNextClick = onNextClick,
+            modifier = modifier
+        )
+
         1 -> ScaleInstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = onSelectScreen,
@@ -240,10 +247,8 @@ fun InstructionsScreen(
             modifier = modifier
         )
 
-        3 -> IntervalInstructionsScreen(
-            lessonId = lessonId,
-            onSelectScreen = onSelectScreen,
-            noteInterval = noteInterval,
+        3 -> IntervalsIntroductionScreen(
+            onNextClick = onNextClick,
             modifier = modifier
         )
 
@@ -254,9 +259,10 @@ fun InstructionsScreen(
             modifier = modifier
         )
 
-        5 -> EarTrainingInstructionsScreen(
+        5 -> IntervalInstructionsScreen(
             lessonId = lessonId,
             onSelectScreen = onSelectScreen,
+            noteInterval = noteInterval,
             modifier = modifier
         )
 
@@ -265,6 +271,168 @@ fun InstructionsScreen(
             onSelectScreen = onSelectScreen,
             modifier = modifier
         )
+
+        7 -> EarTrainingInstructionsScreen(
+            lessonId = lessonId,
+            onSelectScreen = onSelectScreen,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun ScaleIntroductionScreen(
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                painter = painterResource(R.drawable.music_notes),
+                contentDescription = null,
+                modifier = Modifier.size(75.dp)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(R.string.scale_lesson_introduction_label),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = stringResource(R.string.scale_introduction_body_1),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.scale_introduction_body_2),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.scale_introduction_body_3),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.scale_introduction_body_4),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = {
+                onNextClick()
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.return_to_lesson_list_button))
+        }
+    }
+}
+
+@Composable
+fun IntervalsIntroductionScreen(
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                painter = painterResource(R.drawable.music_notes),
+                contentDescription = null,
+                modifier = Modifier.size(75.dp)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(R.string.note_interval_lesson_introduction_label),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = stringResource(R.string.intervals_instruction_body_1),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.intervals_instruction_body_2),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.interval_instruction_body_3),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.interval_instruction_body_4),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = {
+                onNextClick()
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.return_to_lesson_list_button))
+        }
     }
 }
 
