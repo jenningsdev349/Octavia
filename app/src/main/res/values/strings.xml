@@ -49,7 +49,7 @@
     <string name="capturing_photo_button">Capturing Photo...</string>
     <string name="capturing_picture_label">Capturing picture in %1$s</string>
     <string name="octavia_content_description">Octavia Logo</string>
-    <string name="streaks_title_placeholder">You currently have 7 days logged in a row!</string>
+    <string name="streaks_title_placeholder">You currently have %1$s days logged in a row!</string>
     <string name="streaks_subtitle_placeholder">Complete a lesson daily to continue your streak.</string>
     <string name="next_lesson_card_title">Continue to next lesson!</string>
     <string name="next_lesson_card_subtitle">Click here to start next lesson.</string>

@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jenningsdev.octavia.data.model.auth.SignInState
+import com.jenningsdev.octavia.data.model.models.StreaksData
 import com.jenningsdev.octavia.data.model.models.User
 import com.jenningsdev.octavia.data.model.models.UserStats
 import com.jenningsdev.octavia.data.repositories.AuthRepository
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val authRepository: AuthRepository = AuthRepository()
@@ -103,6 +105,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 lessonStatEarTrainingCorrect = 0,
                 lessonStatEarTrainingIncorrect = 0,
             ),
+            streaksData = StreaksData(
+                previousDate = LocalDate.now().toEpochDay(),
+                streakDays = 0
+            )
         )
         if (uid != null) {
             database.child("users").child(uid).setValue(user)

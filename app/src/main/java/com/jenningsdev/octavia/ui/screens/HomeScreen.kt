@@ -43,7 +43,8 @@ fun HomeScreen(
     navController: NavController,
     navigationEvent: String?,
     lessonsComplete: Int,
-    onAnalyticsClick : () -> Unit,
+    streaksDay: Int,
+    onAnalyticsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -94,7 +95,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         GenericCard(
-            title = stringResource(R.string.streaks_title_placeholder),
+            title = stringResource(R.string.streaks_title_placeholder, streaksDay),
             subtitle = stringResource(R.string.streaks_subtitle_placeholder),
             image = painterResource(id = R.drawable.fire),
             colour = colorResource(R.color.colour6),

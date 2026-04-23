@@ -308,6 +308,90 @@ class UserRepository(
         }
     }
 
+    suspend fun getStreaksDate() : Long {
+        val streaksData: Long? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("previousDate")
+            .get()
+            .await()
+            .getValue(Long::class.java)
+        return streaksData ?: 0
+    }
+
+    suspend fun updateStreaksDate(currentDate: Long) {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("previousDate")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("previousDate")
+                .setValue(currentDate)
+        }
+    }
+
+    suspend fun getStreaksDay() : Int {
+        val streaksData: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return streaksData ?: 0
+    }
+
+    suspend fun updateStreaksDay() {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("streakDays")
+                .setValue(streaksStat + 1)
+        }
+    }
+
+    suspend fun resetStreaksDay() {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("streakDays")
+                .setValue(0)
+        }
+    }
+
     suspend fun getCurrentUserName(): String? {
         val username: String? = database
             .child("users")

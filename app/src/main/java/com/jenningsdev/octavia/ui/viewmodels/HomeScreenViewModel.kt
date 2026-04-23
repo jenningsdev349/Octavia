@@ -13,6 +13,14 @@ class HomeScreenViewModel(application: Application): AndroidViewModel(applicatio
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
 
+    suspend fun getStreaksDay(): Int {
+        return userRepository.getStreaksDay()
+    }
+
+    suspend fun getStreaksDate(): Long {
+        return userRepository.getStreaksDate()
+    }
+
     suspend fun getLessonsComplete(): Int {
         return userRepository.getLessonsComplete()
     }
