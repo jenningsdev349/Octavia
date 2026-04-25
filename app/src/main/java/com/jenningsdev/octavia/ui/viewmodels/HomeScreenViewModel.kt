@@ -13,6 +13,10 @@ class HomeScreenViewModel(application: Application): AndroidViewModel(applicatio
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
 
+    suspend fun calculateSuccessRate(): Int {
+        return userRepository.calculateSuccessRate()
+    }
+
     suspend fun getStreaksDay(): Int {
         return userRepository.getStreaksDay()
     }

@@ -154,11 +154,13 @@ class MainActivity : ComponentActivity() {
                                 var lessonsComplete by remember { mutableStateOf(0) }
                                 var streaksDay by remember { mutableStateOf(0) }
                                 var previousDate by remember { mutableStateOf(0L) }
+                                var successRate by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
                                     lessonsComplete = viewModel.getLessonsComplete()
                                     streaksDay = viewModel.getStreaksDay()
                                     previousDate = viewModel.getStreaksDate()
+                                    successRate = viewModel.calculateSuccessRate()
 
                                     val streaksData = StreaksData(
                                         streakDays = streaksDay,
@@ -183,6 +185,7 @@ class MainActivity : ComponentActivity() {
                                     navigationEvent = navigationEvent,
                                     lessonsComplete = lessonsComplete,
                                     streaksDay = streaksDay,
+                                    successRate = successRate,
                                     onAnalyticsClick = { viewModel.onAnalyticsClick() },
                                     modifier = Modifier.fillMaxSize()
                                 )

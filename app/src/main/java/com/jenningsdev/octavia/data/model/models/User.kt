@@ -4,5 +4,7 @@ data class User(
     val email: String,
     val name: String,
     val userStats: UserStats,
-    val streaksData: StreaksData
+    val streaksData: StreaksData,
+    val lessonData: LessonData,
+    val leaderboardStats: LeaderboardStats
 )

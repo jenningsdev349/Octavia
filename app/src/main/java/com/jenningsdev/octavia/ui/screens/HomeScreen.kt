@@ -44,6 +44,7 @@ fun HomeScreen(
     navigationEvent: String?,
     lessonsComplete: Int,
     streaksDay: Int,
+    successRate: Int,
     onAnalyticsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -52,6 +53,9 @@ fun HomeScreen(
         when (navigationEvent) {
             "analytics" -> {
                 navController.navigate("analytics")
+            }
+            "lesson" -> {
+                navController.navigate("lesson/$1")
             }
         }
     }
@@ -112,7 +116,7 @@ fun HomeScreen(
             subtitle = stringResource(R.string.next_lesson_card_subtitle),
             image = painterResource(id = R.drawable.book),
             colour = colorResource(R.color.colour8),
-            onClick = { },
+            onClick = { navController.navigate("lesson/1") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp),
@@ -252,7 +256,7 @@ fun HomeScreen(
                                     .size(100.dp)
                             )
                             Text(
-                                text = "0%",
+                                text = "${successRate}%",
                                 fontSize = 48.sp,
                                 fontWeight = FontWeight.Bold
                             )
