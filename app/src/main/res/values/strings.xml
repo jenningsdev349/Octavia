@@ -71,4 +71,16 @@
     <string name="swipe_right_label">Swipe right to compare!</string>
     <string name="ear_training_stats_label">Ear Training Lesson Stats</string>
     <string name="note_interval_instructions">Sing “Do” with the correct gesture. Choose any pitch, then press the button to capture. Repeat for the second note, singing the correct step away with its gesture.</string>
+    <string name="return_to_lesson_list_button">Return to Lesson List screen</string>
+    <string name="lessons_label">Lessons</string>
+    <string name="scale_introduction_body_1">Scales are a sequence of notes that go from low to high. We use Scales in music to organise notes together in ways that sound good!</string>
+    <string name="scale_introduction_body_2">You may have encountered scales in the past during music education, where you learn Do-Re-Mi, and so on. The lessons here use the same terms to describe scales, no complicated words required!</string>
+    <string name="scale_introduction_body_3">This app has a focus on 2 scales: the major and minor scales. These are the most common scales in modern music.</string>
+    <string name="scale_introduction_body_4">You’ll learn using hand gestures from the Kodály method, where each gesture represents a note. As you perform the gestures, you’ll also perform the matching notes. This helps you connect what you hear, see, and feel. This lesson is designed to be repeated to learn all notes in the scale. Don\'t be afraid to fail!</string>
+    <string name="scale_lesson_introduction_label">Scale Lesson: Introduction</string>
+    <string name="note_interval_lesson_introduction_label">Note Interval Lesson: Introduction</string>
+    <string name="intervals_instruction_body_1">Intervals are the distance between two notes. They are what make melodies move and give music its shape.</string>
+    <string name="intervals_instruction_body_2">In this lesson, you’ll learn to recognise and perform different intervals. These intervals are very important to understanding music!</string>
+    <string name="interval_instruction_body_3">You’ll use hand gestures from the Kodály method, where each gesture represents a note. By moving between gestures and performing the matching notes, you’ll begin to feel how notes relate to each other.</string>
+    <string name="interval_instruction_body_4">This lesson is designed to be repeated. With time, you’ll develop an understanding of all note intervals and how they sound. It’s okay to make mistakes!</string>
 </resources>
