@@ -24,6 +24,7 @@ class UserRepository(
         val lessonsComplete: Int? = database
             .child("users")
             .child(uid)
+            .child("lessonData")
             .child("lessonsComplete")
             .get()
             .await()
@@ -35,6 +36,7 @@ class UserRepository(
         val lessonComplete: Int? = database
             .child("users")
             .child(uid)
+            .child("lessonData")
             .child("lessonsComplete")
             .get()
             .await()
@@ -44,6 +46,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("lessonData")
                 .child("lessonsComplete")
                 .setValue(lessonComplete + 1)
         }
@@ -53,6 +56,7 @@ class UserRepository(
         val lessonStatOkay: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatGestureCorrect")
             .get()
             .await()
@@ -64,6 +68,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatGestureCorrect")
             .get()
             .await()
@@ -73,6 +78,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatGestureCorrect")
                 .setValue(lessonStat + 1)
         }
@@ -82,6 +88,7 @@ class UserRepository(
         val lessonStatGreat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatGestureIncorrect")
             .get()
             .await()
@@ -93,6 +100,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatGestureIncorrect")
             .get()
             .await()
@@ -102,6 +110,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatGestureIncorrect")
                 .setValue(lessonStat + 1)
         }
@@ -111,6 +120,7 @@ class UserRepository(
         val lessonStatNoteCorrect: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatNoteCorrect")
             .get()
             .await()
@@ -122,6 +132,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatNoteCorrect")
             .get()
             .await()
@@ -131,6 +142,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatNoteCorrect")
                 .setValue(lessonStat + 1)
         }
@@ -140,6 +152,7 @@ class UserRepository(
         val lessonStatNoteIncorrect: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatNoteIncorrect")
             .get()
             .await()
@@ -151,6 +164,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatNoteIncorrect")
             .get()
             .await()
@@ -160,6 +174,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatNoteIncorrect")
                 .setValue(lessonStat + 1)
         }
@@ -169,6 +184,7 @@ class UserRepository(
         val lessonStatIntervalCorrect: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatIntervalCorrect")
             .get()
             .await()
@@ -180,6 +196,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatIntervalCorrect")
             .get()
             .await()
@@ -189,6 +206,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatIntervalCorrect")
                 .setValue(lessonStat + 1)
         }
@@ -198,6 +216,7 @@ class UserRepository(
         val lessonStatIntervalIncorrect: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatIntervalIncorrect")
             .get()
             .await()
@@ -209,6 +228,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatIntervalIncorrect")
             .get()
             .await()
@@ -218,6 +238,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatIntervalIncorrect")
                 .setValue(lessonStat + 1)
         }
@@ -227,6 +248,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatEarTrainingCorrect")
             .get()
             .await()
@@ -238,6 +260,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatEarTrainingCorrect")
             .get()
             .await()
@@ -247,6 +270,7 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatEarTrainingCorrect")
                 .setValue(lessonStat + 1)
         }
@@ -256,6 +280,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatEarTrainingIncorrect")
             .get()
             .await()
@@ -267,6 +292,7 @@ class UserRepository(
         val lessonStat: Int? = database
             .child("users")
             .child(uid)
+            .child("userStats")
             .child("lessonStatEarTrainingIncorrect")
             .get()
             .await()
@@ -276,8 +302,156 @@ class UserRepository(
             database
                 .child("users")
                 .child(uid)
+                .child("userStats")
                 .child("lessonStatEarTrainingIncorrect")
                 .setValue(lessonStat + 1)
+        }
+    }
+
+    suspend fun getStreaksDate(): Long {
+        val streaksData: Long? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("previousDate")
+            .get()
+            .await()
+            .getValue(Long::class.java)
+        return streaksData ?: 0
+    }
+
+    suspend fun updateStreaksDate(currentDate: Long) {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("previousDate")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("previousDate")
+                .setValue(currentDate)
+        }
+    }
+
+    suspend fun getStreaksDay(): Int {
+        val streaksData: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+        return streaksData ?: 0
+    }
+
+    suspend fun updateStreaksDay() {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("streakDays")
+                .setValue(streaksStat + 1)
+        }
+    }
+
+    suspend fun resetStreaksDay() {
+        val streaksStat: Int? = database
+            .child("users")
+            .child(uid)
+            .child("streaksData")
+            .child("streakDays")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (streaksStat != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("streaksData")
+                .child("streakDays")
+                .setValue(0)
+        }
+    }
+
+    suspend fun calculateSuccessRate(): Int {
+        val lessonCorrect1: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userStats")
+            .child("lessonStatEarTrainingCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        val lessonCorrect2: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userStats")
+            .child("lessonStatIntervalCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        val lessonCorrect3: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userStats")
+            .child("lessonStatNoteCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        val lessonsComplete: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonData")
+            .child("lessonsComplete")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        val totalSuccessLessons = (lessonCorrect1 ?: 0) + (lessonCorrect2 ?: 0) + (lessonCorrect3 ?: 0)
+        val successRate =  ((totalSuccessLessons.toDouble() / (lessonsComplete ?: 0)) * 100).toInt()
+        updateSuccessRate(successRate)
+        return successRate
+    }
+
+    suspend fun updateSuccessRate(newSuccessRate: Int) {
+        val successRate: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonData")
+            .child("successRate")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (successRate != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonData")
+                .child("successRate")
+                .setValue(newSuccessRate)
         }
     }
 
