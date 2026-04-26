@@ -7,13 +7,18 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jenningsdev.octavia.data.model.auth.SignInState
+import com.jenningsdev.octavia.data.model.models.LeaderboardStats
+import com.jenningsdev.octavia.data.model.models.LessonData
+import com.jenningsdev.octavia.data.model.models.StreaksData
 import com.jenningsdev.octavia.data.model.models.User
+import com.jenningsdev.octavia.data.model.models.UserStats
 import com.jenningsdev.octavia.data.repositories.AuthRepository
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val authRepository: AuthRepository = AuthRepository()
@@ -91,16 +96,29 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         val user = User(
             email,
             name,
-            lessonsComplete = 0,
-            lessonStatGestureCorrect = 0,
-            lessonStatGestureIncorrect = 0,
-            lessonStatNoteCorrect = 0,
-            lessonStatNoteIncorrect = 0,
-            lessonStatIntervalCorrect = 0,
-            lessonStatIntervalIncorrect = 0,
-            lessonStatEarTrainingCorrect = 0,
-            lessonStatEarTrainingIncorrect = 0,
-            points = 0
+            userStats = UserStats(
+                lessonStatGestureCorrect = 0,
+                lessonStatGestureIncorrect = 0,
+                lessonStatNoteCorrect = 0,
+                lessonStatNoteIncorrect = 0,
+                lessonStatIntervalCorrect = 0,
+                lessonStatIntervalIncorrect = 0,
+                lessonStatEarTrainingCorrect = 0,
+                lessonStatEarTrainingIncorrect = 0,
+            ),
+            streaksData = StreaksData(
+                previousDate = LocalDate.now().toEpochDay(),
+                streakDays = 0
+            ),
+            lessonData = LessonData(
+                lastLessonCompleted = 0,
+                lessonsComplete = 0,
+                successRate = 0
+            ),
+            leaderboardStats = LeaderboardStats(
+                leaderboardPosition = 0,
+                daysOnLeaderboard = 0
+            )
         )
         if (uid != null) {
             database.child("users").child(uid).setValue(user)

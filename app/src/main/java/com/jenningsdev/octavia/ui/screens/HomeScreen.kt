@@ -43,7 +43,9 @@ fun HomeScreen(
     navController: NavController,
     navigationEvent: String?,
     lessonsComplete: Int,
-    onAnalyticsClick : () -> Unit,
+    streaksDay: Int,
+    successRate: Int,
+    onAnalyticsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -51,6 +53,9 @@ fun HomeScreen(
         when (navigationEvent) {
             "analytics" -> {
                 navController.navigate("analytics")
+            }
+            "lesson" -> {
+                navController.navigate("lesson/$1")
             }
         }
     }
@@ -94,7 +99,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         GenericCard(
-            title = stringResource(R.string.streaks_title_placeholder),
+            title = stringResource(R.string.streaks_title_placeholder, streaksDay),
             subtitle = stringResource(R.string.streaks_subtitle_placeholder),
             image = painterResource(id = R.drawable.fire),
             colour = colorResource(R.color.colour6),
@@ -111,7 +116,7 @@ fun HomeScreen(
             subtitle = stringResource(R.string.next_lesson_card_subtitle),
             image = painterResource(id = R.drawable.book),
             colour = colorResource(R.color.colour8),
-            onClick = { },
+            onClick = { navController.navigate("lesson/1") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp),
@@ -251,7 +256,7 @@ fun HomeScreen(
                                     .size(100.dp)
                             )
                             Text(
-                                text = "0%",
+                                text = "${successRate}%",
                                 fontSize = 48.sp,
                                 fontWeight = FontWeight.Bold
                             )

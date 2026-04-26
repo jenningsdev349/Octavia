@@ -420,6 +420,15 @@ class UserRepository(
             .await()
             .getValue(Int::class.java)
 
+        val gestureCorrect: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userStats")
+            .child("lessonStatGestureCorrect")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
         val lessonsComplete: Int? = database
             .child("users")
             .child(uid)
