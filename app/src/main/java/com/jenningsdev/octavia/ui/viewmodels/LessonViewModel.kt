@@ -68,6 +68,24 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun updateLastLessonComplete(lessonId: Int) {
+        viewModelScope.launch {
+            userRepository.updateLastLessonCompleted(lessonId)
+        }
+    }
+
+    fun updatePoints(newPoints: Int) {
+        viewModelScope.launch {
+            userRepository.updatePoints(newPoints)
+        }
+    }
+
+    fun removePoints(newPoints: Int) {
+        viewModelScope.launch {
+            userRepository.removePoints(newPoints)
+        }
+    }
+
     fun updateLessonStatNoteCorrect() {
         viewModelScope.launch {
             userRepository.updateLessonStatNoteCorrect()

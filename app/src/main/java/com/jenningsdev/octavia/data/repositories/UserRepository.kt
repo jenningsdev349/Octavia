@@ -340,6 +340,124 @@ class UserRepository(
         }
     }
 
+    suspend fun getLastLessonCompleted(): Int {
+        val lessonId: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonData")
+            .child("lastLessonCompleted")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        when (lessonId) {
+            0 -> return lessonId + 1
+
+            3 -> return lessonId + 1
+
+            7 -> return 1
+        }
+        return (lessonId ?: 0) + 1
+    }
+
+    suspend fun updateLastLessonCompleted(newLessonId: Int) {
+        val lessonId: Int? = database
+            .child("users")
+            .child(uid)
+            .child("lessonData")
+            .child("lastLessonCompleted")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (lessonId != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("lessonData")
+                .child("lastLessonCompleted")
+                .setValue(newLessonId)
+        }
+    }
+
+    suspend fun getUserGrade(): String {
+        val userGrade: String? = database
+            .child("users")
+            .child(uid)
+            .child("userGrade")
+            .child("userGrade")
+            .get()
+            .await()
+            .getValue(String::class.java)
+        return userGrade ?: ""
+    }
+
+    suspend fun updateUserGrade() {
+        val points: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userGrade")
+            .child("points")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (points != null) {
+            val userGrade: String = when (points) {
+                in 0..250 -> "Beginner"
+                in 250..500 -> "Intermediate"
+                else -> "Expert"
+            }
+
+            database
+                .child("users")
+                .child(uid)
+                .child("userGrade")
+                .child("userGrade")
+                .setValue(userGrade)
+        }
+    }
+
+    suspend fun updatePoints(newPoints: Int) {
+        val points: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userGrade")
+            .child("points")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (points != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("userGrade")
+                .child("points")
+                .setValue(points + newPoints)
+        }
+    }
+
+    suspend fun removePoints(newPoints: Int) {
+        val points: Int? = database
+            .child("users")
+            .child(uid)
+            .child("userGrade")
+            .child("points")
+            .get()
+            .await()
+            .getValue(Int::class.java)
+
+        if (points != null) {
+            database
+                .child("users")
+                .child(uid)
+                .child("userGrade")
+                .child("points")
+                .setValue(points - newPoints)
+        }
+    }
+
     suspend fun getStreaksDay(): Int {
         val streaksData: Int? = database
             .child("users")
@@ -420,15 +538,6 @@ class UserRepository(
             .await()
             .getValue(Int::class.java)
 
-        val gestureCorrect: Int? = database
-            .child("users")
-            .child(uid)
-            .child("userStats")
-            .child("lessonStatGestureCorrect")
-            .get()
-            .await()
-            .getValue(Int::class.java)
-
         val lessonsComplete: Int? = database
             .child("users")
             .child(uid)
@@ -439,7 +548,7 @@ class UserRepository(
             .getValue(Int::class.java)
 
         val totalSuccessLessons = (lessonCorrect1 ?: 0) + (lessonCorrect2 ?: 0) + (lessonCorrect3 ?: 0)
-        val successRate =  ((totalSuccessLessons.toDouble() / (lessonsComplete ?: 0)) * 100).toInt()
+        val successRate = ((totalSuccessLessons.toDouble() / (lessonsComplete ?: 0)) * 100).toInt()
         updateSuccessRate(successRate)
         return successRate
     }
@@ -464,7 +573,7 @@ class UserRepository(
         }
     }
 
-    suspend fun getCurrentUserName(): String? {
+    suspend fun getCurrentUserName(): String {
         val username: String? = database
             .child("users")
             .child(uid)
@@ -472,7 +581,7 @@ class UserRepository(
             .get()
             .await()
             .getValue(String::class.java)
-        return username
+        return username ?: ""
     }
 
     fun setLoggedIn(isLoggedIn: Boolean) {

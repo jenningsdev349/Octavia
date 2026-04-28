@@ -11,6 +11,7 @@ import com.jenningsdev.octavia.data.model.models.LeaderboardStats
 import com.jenningsdev.octavia.data.model.models.LessonData
 import com.jenningsdev.octavia.data.model.models.StreaksData
 import com.jenningsdev.octavia.data.model.models.User
+import com.jenningsdev.octavia.data.model.models.UserGrade
 import com.jenningsdev.octavia.data.model.models.UserStats
 import com.jenningsdev.octavia.data.repositories.AuthRepository
 import com.jenningsdev.octavia.data.repositories.UserRepository
@@ -118,6 +119,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             leaderboardStats = LeaderboardStats(
                 leaderboardPosition = 0,
                 daysOnLeaderboard = 0
+            ),
+            userGrade = UserGrade(
+                userGrade = "",
+                points = 0
             )
         )
         if (uid != null) {
