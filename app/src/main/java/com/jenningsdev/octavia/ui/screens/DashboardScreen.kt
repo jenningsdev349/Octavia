@@ -49,11 +49,6 @@ fun DashboardScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.dashboard_app_bar)) },
-            )
-        },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,

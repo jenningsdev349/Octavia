@@ -1,6 +1,7 @@
 package com.jenningsdev.octavia.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -8,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -27,7 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jenningsdev.octavia.R
+import com.jenningsdev.octavia.data.model.models.StreaksData
 import com.jenningsdev.octavia.data.repositories.UserRepository
 import com.jenningsdev.octavia.ui.navigation.NavRoutes
 import com.jenningsdev.octavia.ui.screens.AnalyticsScreen
@@ -49,6 +47,7 @@ import com.jenningsdev.octavia.ui.viewmodels.LessonViewModel
 import com.jenningsdev.octavia.ui.viewmodels.LoginViewModel
 import com.jenningsdev.octavia.ui.viewmodels.ProfileViewModel
 import com.jenningsdev.octavia.ui.viewmodels.SplashScreenViewModel
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
 
@@ -70,13 +69,6 @@ class MainActivity : ComponentActivity() {
                         NavRoutes.splashScreen.route
                     }
                 Scaffold(
-                    topBar = {
-                        if (currentRoute in listOf("dashboard", "lessonList", "profile")) {
-                            TopAppBar(
-                                title = { Text(stringResource(R.string.dashboard_app_bar)) }
-                            )
-                        }
-                    },
                     bottomBar = {
                         if (currentRoute in listOf("dashboard", "lessonList", "profile")) {
                             BottomNavigationBar(
@@ -150,15 +142,45 @@ class MainActivity : ComponentActivity() {
                                 val viewModel = viewModel<HomeScreenViewModel>()
                                 val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
                                 var lessonsComplete by remember { mutableStateOf(0) }
+                                var streaksDay by remember { mutableStateOf(0) }
+                                var previousDate by remember { mutableStateOf(0L) }
+                                var successRate by remember { mutableStateOf(0) }
+                                var lessonId by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
                                     lessonsComplete = viewModel.getLessonsComplete()
+                                    streaksDay = viewModel.getStreaksDay()
+                                    previousDate = viewModel.getStreaksDate()
+                                    successRate = viewModel.calculateSuccessRate()
+                                    lessonId = viewModel.getLastLessonCompleted()
+
+                                    Log.d("LessonId", lessonId.toString())
+
+                                    val streaksData = StreaksData(
+                                        streakDays = streaksDay,
+                                        previousDate = previousDate
+                                    )
+
+                                    if(StreaksData.checkDayDifference(streaksData)) {
+                                        userRepository.resetStreaksDay()
+                                        userRepository.updateStreaksDate(LocalDate.now().toEpochDay())
+                                        streaksDay = userRepository.getStreaksDay()
+                                    }
+
+                                    if (StreaksData.checkStreak(streaksData)) {
+                                        userRepository.updateStreaksDay()
+                                        userRepository.updateStreaksDate(LocalDate.now().toEpochDay())
+                                        streaksDay = userRepository.getStreaksDay()
+                                    }
                                 }
 
                                 HomeScreen(
                                     navController = navController,
                                     navigationEvent = navigationEvent,
+                                    lessonId = lessonId,
                                     lessonsComplete = lessonsComplete,
+                                    streaksDay = streaksDay,
+                                    successRate = successRate,
                                     onAnalyticsClick = { viewModel.onAnalyticsClick() },
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -208,17 +230,22 @@ class MainActivity : ComponentActivity() {
                             composable(NavRoutes.profile.route) {
                                 val viewModel = viewModel<ProfileViewModel>()
                                 val navigationEvent by viewModel.navigationEvent.collectAsStateWithLifecycle()
-                                val uiState by viewModel.uiState.collectAsState()
+                                var username by remember { mutableStateOf("") }
+                                var userGrade by remember { mutableStateOf("") }
 
                                 LaunchedEffect(Unit) {
-                                    viewModel.getUsername()
+                                    viewModel.updateUserGrade()
+
+                                    username = viewModel.getUsername()
+                                    userGrade = viewModel.getUserGrade()
                                 }
 
                                 ProfileScreen(
                                     onSignOutClick = { viewModel.onSignOutClick() },
                                     navigationEvent = navigationEvent,
                                     navController = navController,
-                                    username = uiState.username
+                                    userGrade = userGrade,
+                                    username = username
                                 )
                             }
                             composable(
@@ -253,6 +280,9 @@ class MainActivity : ComponentActivity() {
                                     captureFirstNote = { viewModel.captureFirstNote() },
                                     captureSecondNote = { viewModel.captureSecondNote() },
                                     updateLessonsComplete = { viewModel.updateLessonsComplete() },
+                                    updatePoints = { points ->  viewModel.updatePoints(points) },
+                                    removePoints = { points -> viewModel.removePoints(points) },
+                                    updateLastLessonComplete = { viewModel.updateLastLessonComplete(lessonId) },
                                     updateLessonStatNoteCorrect = { viewModel.updateLessonStatNoteCorrect() },
                                     updateLessonStatNoteIncorrect = { viewModel.updateLessonStatNoteIncorrect() },
                                     updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
