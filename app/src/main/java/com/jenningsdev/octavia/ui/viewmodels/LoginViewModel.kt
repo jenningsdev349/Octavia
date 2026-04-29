@@ -7,7 +7,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jenningsdev.octavia.data.model.auth.SignInState
-import com.jenningsdev.octavia.data.model.models.LeaderboardStats
 import com.jenningsdev.octavia.data.model.models.LessonData
 import com.jenningsdev.octavia.data.model.models.StreaksData
 import com.jenningsdev.octavia.data.model.models.User
@@ -115,10 +114,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 lastLessonCompleted = 0,
                 lessonsComplete = 0,
                 successRate = 0
-            ),
-            leaderboardStats = LeaderboardStats(
-                leaderboardPosition = 0,
-                daysOnLeaderboard = 0
             ),
             userGrade = UserGrade(
                 userGrade = "",

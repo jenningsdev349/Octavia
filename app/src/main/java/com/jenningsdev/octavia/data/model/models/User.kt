@@ -7,5 +7,4 @@ data class User(
     val streaksData: StreaksData,
     val lessonData: LessonData,
     val userGrade: UserGrade,
-    val leaderboardStats: LeaderboardStats
 )
