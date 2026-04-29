@@ -43,6 +43,7 @@ fun HomeScreen(
     navController: NavController,
     navigationEvent: String?,
     lessonsComplete: Int,
+    lessonId: Int,
     streaksDay: Int,
     successRate: Int,
     onAnalyticsClick: () -> Unit,
@@ -55,7 +56,7 @@ fun HomeScreen(
                 navController.navigate("analytics")
             }
             "lesson" -> {
-                navController.navigate("lesson/$1")
+                navController.navigate("lesson/${lessonId}")
             }
         }
     }

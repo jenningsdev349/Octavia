@@ -25,6 +25,10 @@ class HomeScreenViewModel(application: Application): AndroidViewModel(applicatio
         return userRepository.getStreaksDate()
     }
 
+    suspend fun getLastLessonCompleted(): Int {
+        return userRepository.getLastLessonCompleted()
+    }
+
     suspend fun getLessonsComplete(): Int {
         return userRepository.getLessonsComplete()
     }
