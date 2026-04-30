@@ -80,12 +80,6 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun removePoints(newPoints: Int) {
-        viewModelScope.launch {
-            userRepository.removePoints(newPoints)
-        }
-    }
-
     fun updateLessonStatNoteCorrect() {
         viewModelScope.launch {
             userRepository.updateLessonStatNoteCorrect()

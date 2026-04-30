@@ -65,7 +65,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.update {
                 it.copy(
                     isSignInSuccessful = false,
-                    signInError = "Email or password cannot be empty"
+                    signInError = "Email, name and password cannot be empty"
                 )
             }
             return

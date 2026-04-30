@@ -98,9 +98,7 @@ fun LessonScreen(
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
@@ -126,16 +124,13 @@ fun LessonScreen(
 
     when (selectedScreen) {
         1 -> ScaleLessonScreen(
-            lessonId = lessonId,
             note = note,
             startAudio = startAudio,
             stopAudio = stopAudio,
             isNoteCorrect = isMajorNoteCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -146,16 +141,13 @@ fun LessonScreen(
         )
 
         2 -> ScaleLessonScreen(
-            lessonId = lessonId,
             note = note,
             startAudio = startAudio,
             stopAudio = stopAudio,
             isNoteCorrect = isMinorNoteCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -166,7 +158,6 @@ fun LessonScreen(
         )
 
         4 -> NoteIntervalLessonScreen(
-            lessonId = lessonId,
             note = note,
             noteInterval = noteInterval,
             captureFirstNote = captureFirstNote,
@@ -174,17 +165,15 @@ fun LessonScreen(
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             startAudio = startAudio,
+            stopAudio = stopAudio,
             modifier = modifier
         )
 
         5 -> NoteIntervalCameraLessonScreen(
-            lessonId = lessonId,
             note = note,
             noteInterval = noteInterval,
             captureFirstNote = captureFirstNote,
@@ -192,41 +181,34 @@ fun LessonScreen(
             detectNoteInterval = detectNoteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
             updateLessonStatGestureIncorrect = updateLessonStatGestureIncorrect,
             reviewItems = reviewItems,
             startAudio = startAudio,
+            stopAudio = stopAudio,
             modifier = modifier
         )
 
         6 -> EarTrainingLessonScreen(
-            lessonId = lessonId,
             noteInterval = noteInterval,
             randomIntervals = randomIntervals,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
             updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
             modifier = modifier
         )
 
         7 -> EarTrainingCameraLessonScreen(
-            lessonId = lessonId,
             noteInterval = noteInterval,
             reviewItems = reviewItems,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
             updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -674,15 +656,12 @@ fun CameraPreview(
 
 @Composable
 fun PhotoReviewScreen(
-    lessonId: Int,
     bitmap: Bitmap,
     gesture: State<Gesture>,
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit,
@@ -770,7 +749,6 @@ fun PhotoReviewScreen(
 
                             2 -> {
                                 updateLessonStatGestureIncorrect()
-                                removePoints(10)
                                 onNextClick()
                             }
                         }
@@ -779,9 +757,7 @@ fun PhotoReviewScreen(
                             updatePoints(20)
                         } else {
                             updateLessonStatNoteIncorrect()
-                            removePoints(10)
                         }
-                        updateLastLessonComplete(lessonId)
                         updateLessonsComplete()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -797,7 +773,6 @@ fun PhotoReviewScreen(
 
 @Composable
 fun ScaleLessonScreen(
-    lessonId: Int,
     note: String?,
     gesture: State<Gesture>,
     startAudio: () -> Unit,
@@ -805,9 +780,7 @@ fun ScaleLessonScreen(
     isNoteCorrect: Boolean,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatNoteCorrect: () -> Unit,
     updateLessonStatNoteIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit,
@@ -956,14 +929,11 @@ fun ScaleLessonScreen(
         stopAudio()
         PhotoReviewScreen(
             bitmap = capturedBitmap!!,
-            lessonId = lessonId,
             gesture = gesture,
             isNoteCorrect = isNoteCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatNoteCorrect = updateLessonStatNoteCorrect,
             updateLessonStatNoteIncorrect = updateLessonStatNoteIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -976,7 +946,6 @@ fun ScaleLessonScreen(
 
 @Composable
 fun NoteIntervalLessonScreen(
-    lessonId: Int,
     note: String?,
     noteInterval: State<NoteInterval>,
     captureFirstNote: () -> Unit,
@@ -984,12 +953,11 @@ fun NoteIntervalLessonScreen(
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
     startAudio: () -> Unit,
+    stopAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showSecondButton by remember { mutableStateOf(false) }
@@ -1092,15 +1060,13 @@ fun NoteIntervalLessonScreen(
             }
         }
     } else {
+        stopAudio()
         IntervalReviewScreen(
-            lessonId = lessonId,
             noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             modifier = Modifier
@@ -1111,7 +1077,6 @@ fun NoteIntervalLessonScreen(
 
 @Composable
 fun NoteIntervalCameraLessonScreen(
-    lessonId: Int,
     note: String?,
     noteInterval: State<NoteInterval>,
     captureFirstNote: () -> Unit,
@@ -1119,15 +1084,14 @@ fun NoteIntervalCameraLessonScreen(
     detectNoteInterval: Boolean,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit,
     updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
     startAudio: () -> Unit,
+    stopAudio: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -1283,16 +1247,14 @@ fun NoteIntervalCameraLessonScreen(
             }
         }
     } else {
+        stopAudio()
         IntervalReviewScreen(
-            lessonId = lessonId,
             noteInterval = noteInterval,
             isIntervalCorrect = detectNoteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatIntervalCorrect = updateLessonStatIntervalCorrect,
             updateLessonStatIntervalIncorrect = updateLessonStatIntervalIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -1306,14 +1268,11 @@ fun NoteIntervalCameraLessonScreen(
 
 @Composable
 fun EarTrainingLessonScreen(
-    lessonId: Int,
     noteInterval: State<NoteInterval>,
     randomIntervals: State<List<NoteInterval>>,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatEarTrainingCorrect: () -> Unit,
     updateLessonStatEarTrainingIncorrect: () -> Unit,
     modifier: Modifier = Modifier
@@ -1439,14 +1398,11 @@ fun EarTrainingLessonScreen(
         }
     } else {
         EarTrainingReviewScreen(
-            lessonId = lessonId,
             isIntervalCorrect = isCorrect,
             noteInterval = noteInterval,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             modifier = modifier
         )
     }
@@ -1454,14 +1410,11 @@ fun EarTrainingLessonScreen(
 
 @Composable
 fun EarTrainingCameraLessonScreen(
-    lessonId: Int,
     noteInterval: State<NoteInterval>,
     reviewItems: List<GestureRating>,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatEarTrainingCorrect: () -> Unit = { },
     updateLessonStatEarTrainingIncorrect: () -> Unit = { },
     updateLessonStatGestureCorrect: () -> Unit = {  },
@@ -1610,15 +1563,12 @@ fun EarTrainingCameraLessonScreen(
         }
     } else {
         EarTrainingReviewScreen(
-            lessonId = lessonId,
             isIntervalCorrect = null,
             noteInterval = noteInterval,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
-            updateLastLessonComplete = updateLastLessonComplete,
             updatePoints = updatePoints,
-            removePoints = removePoints,
             updateLessonStatEarTrainingCorrect = updateLessonStatEarTrainingCorrect,
             updateLessonStatEarTrainingIncorrect = updateLessonStatEarTrainingIncorrect,
             updateLessonStatGestureCorrect = updateLessonStatGestureCorrect,
@@ -1677,15 +1627,12 @@ fun ReviewDropdownMenu(
 
 @Composable
 fun IntervalReviewScreen(
-    lessonId: Int,
     noteInterval: State<NoteInterval>,
     isIntervalCorrect: Boolean,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatIntervalCorrect: () -> Unit,
     updateLessonStatIntervalIncorrect: () -> Unit,
     updateLessonStatGestureCorrect: () -> Unit = {},
@@ -1731,8 +1678,8 @@ fun IntervalReviewScreen(
 
             Button(
                 onClick = {
-                    updateLastLessonComplete(lessonId)
                     updateLessonsComplete()
+                    updatePoints(20)
                     onNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -1826,7 +1773,6 @@ fun IntervalReviewScreen(
 
                                 2 -> {
                                     updateLessonStatGestureIncorrect()
-                                    removePoints(10)
                                     onNextClick()
                                 }
                             }
@@ -1835,9 +1781,7 @@ fun IntervalReviewScreen(
                                 updatePoints(20)
                             } else {
                                 updateLessonStatIntervalIncorrect()
-                                removePoints(10)
                             }
-                            updateLastLessonComplete(lessonId)
                             updateLessonsComplete()
                             onNextClick()
                         },
@@ -1855,15 +1799,12 @@ fun IntervalReviewScreen(
 
 @Composable
 fun EarTrainingReviewScreen(
-    lessonId: Int,
     isIntervalCorrect: Boolean? = null,
     noteInterval: State<NoteInterval>,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
-    updateLastLessonComplete: (Int) -> Unit,
     updatePoints: (Int) -> Unit,
-    removePoints: (Int) -> Unit,
     updateLessonStatEarTrainingCorrect: () -> Unit = { },
     updateLessonStatEarTrainingIncorrect: () -> Unit = {},
     updateLessonStatGestureCorrect: () -> Unit = {},
@@ -1928,8 +1869,8 @@ fun EarTrainingReviewScreen(
 
             Button(
                 onClick = {
-                    updateLastLessonComplete(lessonId)
                     updateLessonsComplete()
+                    updatePoints(20)
                     onNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -2034,11 +1975,9 @@ fun EarTrainingReviewScreen(
                                 2 -> {
                                     updateLessonStatEarTrainingIncorrect()
                                     updateLessonStatGestureIncorrect()
-                                    removePoints(10)
                                     onNextClick()
                                 }
                             }
-                            updateLastLessonComplete(lessonId)
                             updateLessonsComplete()
                             onNextClick()
                         },

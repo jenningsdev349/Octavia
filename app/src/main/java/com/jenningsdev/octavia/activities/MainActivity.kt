@@ -145,16 +145,12 @@ class MainActivity : ComponentActivity() {
                                 var streaksDay by remember { mutableStateOf(0) }
                                 var previousDate by remember { mutableStateOf(0L) }
                                 var successRate by remember { mutableStateOf(0) }
-                                var lessonId by remember { mutableStateOf(0) }
 
                                 LaunchedEffect(Unit) {
                                     lessonsComplete = viewModel.getLessonsComplete()
                                     streaksDay = viewModel.getStreaksDay()
                                     previousDate = viewModel.getStreaksDate()
                                     successRate = viewModel.calculateSuccessRate()
-                                    lessonId = viewModel.getLastLessonCompleted()
-
-                                    Log.d("LessonId", lessonId.toString())
 
                                     val streaksData = StreaksData(
                                         streakDays = streaksDay,
@@ -177,7 +173,6 @@ class MainActivity : ComponentActivity() {
                                 HomeScreen(
                                     navController = navController,
                                     navigationEvent = navigationEvent,
-                                    lessonId = lessonId,
                                     lessonsComplete = lessonsComplete,
                                     streaksDay = streaksDay,
                                     successRate = successRate,
@@ -281,8 +276,6 @@ class MainActivity : ComponentActivity() {
                                     captureSecondNote = { viewModel.captureSecondNote() },
                                     updateLessonsComplete = { viewModel.updateLessonsComplete() },
                                     updatePoints = { points ->  viewModel.updatePoints(points) },
-                                    removePoints = { points -> viewModel.removePoints(points) },
-                                    updateLastLessonComplete = { viewModel.updateLastLessonComplete(lessonId) },
                                     updateLessonStatNoteCorrect = { viewModel.updateLessonStatNoteCorrect() },
                                     updateLessonStatNoteIncorrect = { viewModel.updateLessonStatNoteIncorrect() },
                                     updateLessonStatIntervalCorrect = { viewModel.updateLessonStatIntervalCorrect() },
