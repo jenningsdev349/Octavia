@@ -108,7 +108,8 @@ fun LessonScreen(
     updateLessonStatGestureCorrect: () -> Unit,
     updateLessonStatGestureIncorrect: () -> Unit,
     reviewItems: List<GestureRating>,
-    detectNoteInterval: Boolean,
+    detectNoteInterval: () -> Unit,
+    isIntervalCorrect: State<Boolean>,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -163,6 +164,7 @@ fun LessonScreen(
             captureFirstNote = captureFirstNote,
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
+            isIntervalCorrect = isIntervalCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updatePoints = updatePoints,
@@ -179,6 +181,7 @@ fun LessonScreen(
             captureFirstNote = captureFirstNote,
             captureSecondNote = captureSecondNote,
             detectNoteInterval = detectNoteInterval,
+            isIntervalCorrect = isIntervalCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updatePoints = updatePoints,
@@ -525,7 +528,7 @@ fun IntervalInstructionsScreen(
             fontSize = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = noteInterval.value.intervalName,
@@ -534,7 +537,7 @@ fun IntervalInstructionsScreen(
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(R.string.note_interval_video_label),
@@ -543,7 +546,7 @@ fun IntervalInstructionsScreen(
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         HorizontalPager(
             state = pagerState,
@@ -950,7 +953,8 @@ fun NoteIntervalLessonScreen(
     noteInterval: State<NoteInterval>,
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
-    detectNoteInterval: Boolean,
+    detectNoteInterval: () -> Unit,
+    isIntervalCorrect: State<Boolean>,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updatePoints: (Int) -> Unit,
@@ -1063,7 +1067,8 @@ fun NoteIntervalLessonScreen(
         stopAudio()
         IntervalReviewScreen(
             noteInterval = noteInterval,
-            isIntervalCorrect = detectNoteInterval,
+            detectNoteInterval = detectNoteInterval,
+            isIntervalCorrect = isIntervalCorrect,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
             updatePoints = updatePoints,
@@ -1081,7 +1086,8 @@ fun NoteIntervalCameraLessonScreen(
     noteInterval: State<NoteInterval>,
     captureFirstNote: () -> Unit,
     captureSecondNote: () -> Unit,
-    detectNoteInterval: Boolean,
+    detectNoteInterval: () -> Unit,
+    isIntervalCorrect: State<Boolean>,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
     updatePoints: (Int) -> Unit,
@@ -1250,7 +1256,8 @@ fun NoteIntervalCameraLessonScreen(
         stopAudio()
         IntervalReviewScreen(
             noteInterval = noteInterval,
-            isIntervalCorrect = detectNoteInterval,
+            detectNoteInterval = detectNoteInterval,
+            isIntervalCorrect = isIntervalCorrect,
             capturedBitmaps = bitmaps,
             onNextClick = onNextClick,
             updateLessonsComplete = updateLessonsComplete,
@@ -1628,7 +1635,8 @@ fun ReviewDropdownMenu(
 @Composable
 fun IntervalReviewScreen(
     noteInterval: State<NoteInterval>,
-    isIntervalCorrect: Boolean,
+    detectNoteInterval: () -> Unit,
+    isIntervalCorrect: State<Boolean>,
     capturedBitmaps: List<Bitmap?>? = null,
     onNextClick: () -> Unit,
     updateLessonsComplete: () -> Unit,
@@ -1640,6 +1648,8 @@ fun IntervalReviewScreen(
     reviewItems: List<GestureRating> = listOf(),
     modifier: Modifier = Modifier
 ) {
+    detectNoteInterval()
+
     var selectedItem by remember { mutableStateOf(reviewItems.lastOrNull()) }
 
     val pagerState = rememberPagerState(
@@ -1658,7 +1668,7 @@ fun IntervalReviewScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isIntervalCorrect) Text(
+                if (isIntervalCorrect.value) Text(
                     stringResource(R.string.note_interval_correct),
                     fontSize = 18.sp
                 ) else Text(
@@ -1678,8 +1688,14 @@ fun IntervalReviewScreen(
 
             Button(
                 onClick = {
-                    updateLessonsComplete()
-                    updatePoints(20)
+                    if (isIntervalCorrect.value) {
+                        updateLessonStatIntervalCorrect()
+                        updateLessonsComplete()
+                        updatePoints(20)
+                    } else {
+                        updateLessonStatIntervalIncorrect()
+                        updateLessonsComplete()
+                    }
                     onNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.colour5)),
@@ -1700,7 +1716,7 @@ fun IntervalReviewScreen(
                     .height(48.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (isIntervalCorrect) Text(stringResource(R.string.note_interval_correct)) else Text(
+                if (isIntervalCorrect.value) Text(stringResource(R.string.note_interval_correct)) else Text(
                     stringResource(R.string.note_interval_incorrect)
                 )
             }
@@ -1776,7 +1792,7 @@ fun IntervalReviewScreen(
                                     onNextClick()
                                 }
                             }
-                            if (isIntervalCorrect) {
+                            if (isIntervalCorrect.value) {
                                 updateLessonStatIntervalCorrect()
                                 updatePoints(20)
                             } else {

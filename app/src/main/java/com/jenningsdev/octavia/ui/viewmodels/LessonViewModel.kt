@@ -44,6 +44,10 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
     private val _reviewItems = listOf(GestureRating.correct, GestureRating.incorrect)
     val reviewItems = _reviewItems
 
+    private val _intervalCorrect = MutableStateFlow(false)
+    val isIntervalCorrect = _intervalCorrect
+
+
     private val _randomIntervals = MutableStateFlow(listOf(createRandomInterval(), createRandomInterval()))
     val randomIntervals: StateFlow<List<NoteInterval>> = _randomIntervals
 
@@ -139,10 +143,9 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
 
     fun detectNoteInterval(
         expectedInterval: NoteInterval = _noteInterval.value
-    ): Boolean {
+    ) {
         val actualInterval = _secondNote.value - _firstNote.value
-
-        return actualInterval == expectedInterval.semitones
+        _intervalCorrect.value = actualInterval == expectedInterval.semitones
     }
 
     fun updateLessonStatGestureIncorrect() {

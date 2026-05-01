@@ -1,7 +1,6 @@
 package com.jenningsdev.octavia.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -260,6 +259,7 @@ class MainActivity : ComponentActivity() {
                                 val noteInterval = viewModel.noteInterval.collectAsState()
                                 val randomIntervals = viewModel.randomIntervals.collectAsState()
                                 val reviewItems = viewModel.reviewItems
+                                val isIntervalCorrect = viewModel.isIntervalCorrect.collectAsState()
 
                                 LessonScreen(
                                     lessonId = lessonId,
@@ -285,7 +285,8 @@ class MainActivity : ComponentActivity() {
                                     updateLessonStatEarTrainingCorrect = { viewModel.updateLessonStatEarTrainingCorrect() },
                                     updateLessonStatEarTrainingIncorrect = { viewModel.updateLessonStatEarTrainingIncorrect() },
                                     reviewItems = reviewItems,
-                                    detectNoteInterval = viewModel.detectNoteInterval(),
+                                    detectNoteInterval = { viewModel.detectNoteInterval() },
+                                    isIntervalCorrect = isIntervalCorrect,
                                     stopAudio = { viewModel.stopAudio() },
                                     onNextClick = { viewModel.onNextClick() },
                                     modifier = Modifier.fillMaxSize(),
