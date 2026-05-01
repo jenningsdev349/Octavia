@@ -111,7 +111,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 streakDays = 0
             ),
             lessonData = LessonData(
-                lastLessonCompleted = 0,
                 lessonsComplete = 0,
                 successRate = 0
             ),
