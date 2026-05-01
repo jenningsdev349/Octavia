@@ -9,11 +9,6 @@ class LessonListViewModel : ViewModel() {
     private val _lessons = MutableStateFlow(
         listOf(
             Lesson(
-                lessonId = 0,
-                title = "Kodály Method Lesson Introduction: Scales",
-                description = "Introduction to Major and Minor scale lesson types"
-            ),
-            Lesson(
                 lessonId = 1,
                 title = "Kodály Method Lesson 1: Major Scale",
                 description = "Learn about Major Scale through performing gestures and singing corresponding note"
@@ -22,11 +17,6 @@ class LessonListViewModel : ViewModel() {
                 lessonId = 2,
                 title = "Kodály Method Lesson 2: Minor Scale",
                 description = "Learn about Minor Scale through performing gestures and singing corresponding note"
-            ),
-            Lesson(
-                lessonId = 3,
-                title = "Kodály Method Lesson Introduction: Intervals",
-                description = "Introduction to Note Interval lessons"
             ),
             Lesson(
                 lessonId = 4,

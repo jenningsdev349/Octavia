@@ -340,26 +340,6 @@ class UserRepository(
         }
     }
 
-    suspend fun getLastLessonCompleted(): Int {
-        val lessonId: Int? = database
-            .child("users")
-            .child(uid)
-            .child("lessonData")
-            .child("lastLessonCompleted")
-            .get()
-            .await()
-            .getValue(Int::class.java)
-
-        when (lessonId) {
-            0 -> return lessonId + 1
-
-            3 -> return lessonId + 1
-
-            7 -> return 1
-        }
-        return (lessonId ?: 0) + 1
-    }
-
     suspend fun updateLastLessonCompleted(newLessonId: Int) {
         val lessonId: Int? = database
             .child("users")
@@ -435,26 +415,6 @@ class UserRepository(
                 .child("userGrade")
                 .child("points")
                 .setValue(points + newPoints)
-        }
-    }
-
-    suspend fun removePoints(newPoints: Int) {
-        val points: Int? = database
-            .child("users")
-            .child(uid)
-            .child("userGrade")
-            .child("points")
-            .get()
-            .await()
-            .getValue(Int::class.java)
-
-        if (points != null) {
-            database
-                .child("users")
-                .child(uid)
-                .child("userGrade")
-                .child("points")
-                .setValue(points - newPoints)
         }
     }
 
