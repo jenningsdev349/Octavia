@@ -19,22 +19,22 @@ class LessonListViewModel : ViewModel() {
                 description = "Learn about Minor Scale through performing gestures and singing corresponding note"
             ),
             Lesson(
-                lessonId = 4,
+                lessonId = 3,
                 title = "Kodály Method Lesson 3: Note Intervals",
                 description = "Learn about intervals between notes and note relationships."
             ),
             Lesson(
-                lessonId = 5,
+                lessonId = 4,
                 title = "Kodály Method Lesson 4: Note Intervals + Gestures",
                 description = "Learn about and perform gestures corresponding to intervals between notes and note relationships."
             ),
             Lesson(
-                lessonId = 6,
+                lessonId = 5,
                 title = "Kodály Method Lesson 5: Ear Training",
                 description = "Listen along to note being played, select correct note from list."
             ),
             Lesson(
-                lessonId = 7,
+                lessonId = 6,
                 title = "Kodály Method Lesson 6: Ear Training + Gestures",
                 description = "Listen along to note being played, select correct note and perform correct gesture."
             )

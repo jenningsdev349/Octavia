@@ -3,8 +3,8 @@ package com.jenningsdev.octavia.ui.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import be.tarsos.dsp.util.PitchConverter
 import com.jenningsdev.octavia.data.audio.AudioEngine
-import com.jenningsdev.octavia.data.audio.PitchConverterHelper.hzToMidi
 import com.jenningsdev.octavia.data.model.models.Gesture
 import com.jenningsdev.octavia.data.model.models.GestureRating
 import com.jenningsdev.octavia.data.model.models.NoteInterval
@@ -72,12 +72,6 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun updateLastLessonComplete(lessonId: Int) {
-        viewModelScope.launch {
-            userRepository.updateLastLessonCompleted(lessonId)
-        }
-    }
-
     fun updatePoints(newPoints: Int) {
         viewModelScope.launch {
             userRepository.updatePoints(newPoints)
@@ -134,11 +128,11 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun captureFirstNote() {
-        _firstNote.value = hzToMidi(pitchHz.value)
+        _firstNote.value = PitchConverter.hertzToMidiKey(pitchHz.value.toDouble())
     }
 
     fun captureSecondNote() {
-        _secondNote.value = hzToMidi(pitchHz.value)
+        _secondNote.value = PitchConverter.hertzToMidiKey(pitchHz.value.toDouble())
     }
 
     fun detectNoteInterval(
@@ -165,12 +159,11 @@ class LessonViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun createRandomInterval(): NoteInterval {
-        val newNoteInterval = MutableStateFlow(NoteInterval.random())
-
-        while(newNoteInterval.value == noteInterval.value) {
-            newNoteInterval.value = NoteInterval.random()
+        var randomInterval: NoteInterval
+        do{
+            randomInterval = NoteInterval.random()
         }
-
-        return newNoteInterval.value
+        while(randomInterval == noteInterval.value)
+        return randomInterval
     }
 }

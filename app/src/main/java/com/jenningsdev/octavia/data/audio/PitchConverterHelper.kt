@@ -1,17 +1,12 @@
 package com.jenningsdev.octavia.data.audio
 
-import kotlin.math.log2
-import kotlin.math.roundToInt
+import be.tarsos.dsp.util.PitchConverter
 
 object PitchConverterHelper {
-
     fun hzToNoteName(freq: Float): String {
-        val midi = hzToMidi(freq)
+        val midi = PitchConverter.hertzToMidiKey(freq.toDouble())
         return midiToNote(midi)
     }
-
-    fun hzToMidi(freq: Float): Int =
-        (69 + 12 * log2(freq / 440f)).roundToInt()
 
     private fun midiToNote(midi: Int): String {
         val names = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")

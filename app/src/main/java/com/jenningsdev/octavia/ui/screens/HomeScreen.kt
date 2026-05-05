@@ -48,7 +48,6 @@ fun HomeScreen(
     onAnalyticsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
             "analytics" -> {
